@@ -1,0 +1,41 @@
+@import '~antd/es/style/themes/default.less';
+
+.footer {
+  background-color: #001529;
+  padding: 48px 0;
+  color: white;
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .footer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+
+    @media (min-width: @screen-md) {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .brand-name {
+        font-size: 20px;
+        font-weight: 600;
+        color: white;
+      }
+    }
+
+    .copyright {
+      color: rgba(255, 255, 255, 0.45);
+    }
+  }
+}

@@ -1,26 +1,22 @@
-import { landingUrl, unitName } from '@/services/base/constant';
-import { DefaultFooter } from '@ant-design/pro-layout';
-import { useIntl } from 'umi';
+import { ReadOutlined } from '@ant-design/icons';
+import './index.less';
 
-export default () => {
-	const intl = useIntl();
-	const defaultMessage = intl.formatMessage({
-		id: 'app.copyright.produced',
-		defaultMessage: 'CopyRight',
-	});
-
+const Footer = () => {
 	return (
-		<DefaultFooter
-			copyright={`2025 ${defaultMessage} - ${APP_CONFIG_APP_VERSION}`}
-			links={[
-				{
-					key: 'github',
-					title: unitName.toUpperCase(),
-					href: landingUrl,
-					blankTarget: true,
-				},
-			]}
-			style={{ width: '100%' }}
-		/>
+		<footer className="footer">
+			<div className="container">
+				<div className="footer-content">
+					<div className="logo">
+						<ReadOutlined style={{ fontSize: 24, color: '#eb2f96' }} />
+						<span className="brand-name">BorrowEase</span>
+					</div>
+					<div className="copyright">
+						© 2025 BorrowEase. All rights reserved.
+					</div>
+				</div>
+			</div>
+		</footer>
 	);
 };
+
+export default Footer;

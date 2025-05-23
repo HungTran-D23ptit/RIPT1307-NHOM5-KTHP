@@ -1,23 +1,32 @@
 ﻿export default [
 	{
-		path: '/user',
+		path: '/landing',
+		layout: false,
+		component: './LandingPage',
+	},
+	{
+		path: '/auth',
 		layout: false,
 		routes: [
 			{
-				path: '/user/login',
+				path: '/auth/login',
 				layout: false,
 				name: 'login',
-				component: './user/Login',
+				component: './Auth/Login',
 			},
 			{
-				path: '/user',
-				redirect: '/user/login',
+				path: '/auth/register',
+				layout: false,
+				name: 'register',
+				component: './Auth/Register',
+			},
+			{
+				path: '/auth',
+				redirect: '/auth/login',
 			},
 		],
 	},
 
-	///////////////////////////////////
-	// DEFAULT MENU
 	{
 		path: '/dashboard',
 		name: 'Dashboard',
@@ -36,20 +45,6 @@
 		component: './RandomUser',
 		icon: 'ArrowsAltOutlined',
 	},
-
-	// DANH MUC HE THONG
-	// {
-	// 	name: 'DanhMuc',
-	// 	path: '/danh-muc',
-	// 	icon: 'copy',
-	// 	routes: [
-	// 		{
-	// 			name: 'ChucVu',
-	// 			path: 'chuc-vu',
-	// 			component: './DanhMuc/ChucVu',
-	// 		},
-	// 	],
-	// },
 
 	{
 		path: '/notification',
@@ -75,6 +70,7 @@
 	},
 	{
 		path: '/',
+		redirect: '/landing',
 	},
 	{
 		path: '/403',
