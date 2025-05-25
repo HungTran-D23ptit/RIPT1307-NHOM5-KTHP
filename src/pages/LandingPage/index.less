@@ -1,0 +1,292 @@
+@import '~antd/es/style/themes/default.less';
+
+.landing-page {
+	min-height: 100vh;
+	background: linear-gradient(180deg, #c7ccfd 0%, #e6f4ff 100%);
+
+	.container {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 0 1rem;
+	}
+
+	// Navigation
+	.header {
+		padding: 24px 0;
+
+		nav {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		.logo {
+			display: flex;
+			gap: 8px;
+			align-items: center;
+
+			.brand-name {
+				color: @text-color;
+				font-weight: 600;
+				font-size: 20px;
+			}
+		}
+
+		.nav-links {
+			display: flex;
+			gap: 24px;
+			align-items: center;
+
+			a {
+				padding: 6px 0;
+				color: @text-color-secondary;
+				font-size: 16px;
+				cursor: pointer;
+				transition: all 0.3s;
+
+				&:hover {
+					color: #eb2f96;
+				}
+			}
+
+			.ant-btn {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				height: 40px;
+				padding: 6px 24px;
+				font-size: 16px;
+			}
+
+			.ant-btn-primary {
+				min-width: 140px;
+				background-color: #241bd6;
+				border-color: #241bd6;
+				border-radius: 20px;
+				transition: all 0.3s;
+
+				&:hover {
+					background-color: #f759ab;
+					border-color: #f759ab;
+					box-shadow: 0 4px 12px rgba(235, 47, 150, 0.4);
+				}
+			}
+		}
+	}
+
+	// Hero Section
+	.hero-section {
+		padding: 80px 0;
+
+		.hero-content {
+			display: flex;
+			gap: 48px;
+			align-items: center;
+
+			@media (max-width: @screen-md) {
+				flex-direction: column;
+			}
+		}
+
+		.hero-text {
+			flex: 1;
+			text-align: left;
+
+			h1 {
+				margin-bottom: 24px;
+				color: @text-color;
+				font-weight: 700;
+				font-size: 48px;
+
+				@media (min-width: @screen-md) {
+					font-size: 56px;
+				}
+
+				.highlight {
+					color: #241bd6;
+				}
+			}
+
+			.hero-description {
+				margin-bottom: 40px;
+				color: @text-color-secondary;
+				font-size: 18px;
+			}
+
+			.hero-buttons {
+				display: flex;
+				gap: 16px;
+
+				@media (max-width: @screen-sm) {
+					flex-direction: column;
+				}
+
+				.ant-btn {
+					min-width: 180px;
+				}
+			}
+		}
+
+		.hero-image {
+			display: flex;
+			flex: 1;
+			align-items: center;
+			justify-content: center;
+			padding: 20px;
+			background: white;
+			border-radius: 20px;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+
+			img {
+				max-width: 100%;
+				height: auto;
+				border-radius: 10px;
+			}
+		}
+	}
+
+	// Features Section
+	.features-section {
+		padding: 80px 0;
+
+		h2 {
+			margin-bottom: 48px;
+			font-weight: 700;
+			font-size: 32px;
+			text-align: center;
+
+			@media (min-width: @screen-md) {
+				font-size: 36px;
+			}
+		}
+
+		.features-grid {
+			display: grid;
+			gap: 32px;
+
+			@media (min-width: @screen-md) {
+				grid-template-columns: repeat(3, 1fr);
+			}
+		}
+
+		.feature-card {
+			padding: 24px;
+			background: white;
+			border-radius: 16px;
+			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+			cursor: pointer;
+			transition: all 0.3s ease;
+
+			&:hover {
+				box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+				transform: translateY(-5px);
+
+				.icon-wrapper {
+					transform: scale(1.1);
+				}
+			}
+
+			.icon-wrapper {
+				display: inline-flex;
+				margin-bottom: 16px;
+				padding: 12px;
+				border-radius: 50%;
+				transition: transform 0.3s ease;
+
+				&.blue {
+					background-color: #e6f4ff;
+
+					.anticon {
+						color: #1890ff;
+					}
+				}
+
+				&.pink {
+					background-color: #fff0f6;
+
+					.anticon {
+						color: #eb2f96;
+					}
+				}
+
+				&.purple {
+					background-color: #f9f0ff;
+
+					.anticon {
+						color: #722ed1;
+					}
+				}
+			}
+
+			h3 {
+				margin-bottom: 12px;
+				font-weight: 600;
+				font-size: 20px;
+			}
+
+			p {
+				margin: 0;
+				color: @text-color-secondary;
+			}
+		}
+	}
+
+	// Dashboard Section
+	.dashboard-section {
+		padding: 80px 0;
+
+		.grid-container {
+			display: grid;
+			gap: 48px;
+			align-items: center;
+
+			@media (min-width: @screen-md) {
+				grid-template-columns: repeat(2, 1fr);
+			}
+		}
+
+		h2 {
+			margin-bottom: 24px;
+			font-weight: 700;
+			font-size: 32px;
+
+			@media (min-width: @screen-md) {
+				font-size: 36px;
+			}
+		}
+
+		.description {
+			margin-bottom: 24px;
+			color: @text-color-secondary;
+			font-size: 16px;
+		}
+
+		.feature-list {
+			margin-bottom: 32px;
+
+			.feature-item {
+				display: flex;
+				gap: 8px;
+				align-items: center;
+				margin-bottom: 16px;
+
+				.anticon {
+					color: @success-color;
+				}
+			}
+		}
+
+		.preview-image {
+			padding: 16px;
+			background: white;
+			border-radius: 16px;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+
+			img {
+				max-width: 100%;
+				height: auto;
+				border-radius: 10px;
+			}
+		}
+	}
+}
