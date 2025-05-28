@@ -51,7 +51,15 @@ const AddDeviceModal: React.FC<AddDeviceModalProps> = ({ visible, onCancel, onSu
 			formData.append('status', 'NORMAL');
 
 			if (fileList[0]) {
-				formData.append('image_url', fileList[0].originFileObj as RcFile);
+				const file = fileList[0].originFileObj as RcFile;
+				const fileType = file.type.toLowerCase();
+				const isJpgOrPng = fileType === 'image/jpeg' || fileType === 'image/png' || fileType === 'image/jpg';
+				if (!isJpgOrPng) {
+					message.error('Chỉ chấp nhận file JPG/PNG!');
+					setLoading(false);
+					return;
+				}
+				formData.append('image', file, file.name);
 			}
 
 			const response = await rootAPI.post('/admin/device', formData, {
@@ -67,14 +75,21 @@ const AddDeviceModal: React.FC<AddDeviceModalProps> = ({ visible, onCancel, onSu
 				onSuccess();
 			}
 		} catch (error: any) {
-			if (error.response?.data) {
-				// Handle validation errors
-				const errors = error.response.data;
-				Object.entries(errors).forEach(([field, msg]) => {
-					message.error(`${msg}`);
+			if (error.response?.data?.detail) {
+				const errors = error.response.data.detail;
+				Object.entries(errors).forEach(([field, msg]: [string, any]) => {
+					const vietnameseMessages: Record<string, string> = {
+						'Ảnh thiết bị does not match any of the allowed types':
+							'Định dạng ảnh không hợp lệ. Vui lòng sử dụng file ảnh (jpg, png, jpeg)',
+						'Trạng thái không hợp lệ.': 'Trạng thái thiết bị không hợp lệ. Vui lòng chọn trạng thái khác.',
+						'Loại thiết bị không hợp lệ.': 'Loại thiết bị không hợp lệ. Vui lòng chọn loại khác.',
+					};
+					message.error(vietnameseMessages[msg] || msg);
 				});
+			} else if (error.response?.data?.message) {
+				message.error('Yêu cầu không hợp lệ. Vui lòng kiểm tra lại thông tin');
 			} else {
-				message.error('Không thể thêm thiết bị');
+				message.error('Không thể thêm thiết bị. Vui lòng thử lại sau');
 			}
 		} finally {
 			setLoading(false);

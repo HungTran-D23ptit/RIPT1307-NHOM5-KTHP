@@ -79,29 +79,29 @@ const EditDeviceModal: React.FC<EditDeviceModalProps> = ({ visible, onCancel, on
 				return;
 			}
 
-			const updateData: any = {
-				status: values.status,
-				type: values.type,
-				name: values.name,
-				code: values.code,
-				description: values.description,
-				quantity: values.quantity,
-			};
+			const formData = new FormData();
+			formData.append('name', values.name);
+			formData.append('code', values.code);
+			formData.append('type', values.type);
+			formData.append('description', values.description || '');
+			formData.append('quantity', values.quantity.toString());
+			formData.append('status', values.status);
 
 			if (fileList[0]?.originFileObj) {
 				const file = fileList[0].originFileObj;
-				const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg';
+				const fileType = file.type.toLowerCase();
+				const isJpgOrPng = fileType === 'image/jpeg' || fileType === 'image/png' || fileType === 'image/jpg';
 				if (!isJpgOrPng) {
 					message.error('Chỉ chấp nhận file JPG/PNG!');
 					setLoading(false);
 					return;
 				}
-				updateData.image_url = file;
+				formData.append('image', file, file.name);
 			} else if (!fileList.length && initialData.image_url) {
-				updateData.image = 'remove';
+				formData.append('image', 'remove');
 			}
 
-			await updateDevice(initialData._id, updateData);
+			await updateDevice(initialData._id, formData);
 			message.success('Cập nhật thiết bị thành công');
 			onSuccess();
 		} catch (error: any) {
