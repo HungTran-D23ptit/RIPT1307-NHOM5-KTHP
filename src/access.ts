@@ -6,6 +6,7 @@ import type { IInitialState } from './services/base/typing';
  * */
 export default function access(initialState: IInitialState) {
 	// const scopes = initialState.authorizedPermissions?.find((item) => item.rsname === currentRole)?.scopes;
+	const { currentUser } = initialState || {};
 	const scopes = initialState.authorizedPermissions?.map((item) => item.scopes).flat();
 
 	return {
@@ -60,5 +61,6 @@ export default function access(initialState: IInitialState) {
 		//     : (route: any) => {
 		//         return handlePhanNhom(initialState, route?.maChucNang) || false;
 		//       },
+		admin: currentUser?.realm_access?.roles?.includes('QUAN_TRI_VIEN') || false,
 	};
 }
