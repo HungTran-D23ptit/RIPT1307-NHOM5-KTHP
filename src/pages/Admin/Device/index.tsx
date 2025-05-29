@@ -1,3 +1,4 @@
+import { DeviceType } from '@/services/Admin/Device/typing';
 import rootAPI from '@/services/rootAPI';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Col, Input, message, Row, Select, Tabs } from 'antd';
@@ -5,14 +6,9 @@ import React, { useEffect, useState } from 'react';
 import AddDeviceModal from './components/AddDeviceModal';
 import AvailableDevices from './components/AvailableDevices';
 import BorrowedDevices from './components/BorrowedDevices';
-import MaintenanceDevices from './components/MaintenanceDevices';
+import MaintenanceDevices from './components/MaintenanceDecices';
 
 const { Search } = Input;
-
-interface DeviceType {
-	label: string;
-	value: string;
-}
 
 const DeviceManagement: React.FC = () => {
 	const [searchText, setSearchText] = useState('');
@@ -23,12 +19,12 @@ const DeviceManagement: React.FC = () => {
 	const [refreshKey, setRefreshKey] = useState(Date.now());
 	const [deviceTypes, setDeviceTypes] = useState<DeviceType[]>([{ label: 'Tất cả', value: 'all' }]);
 
-	const deviceStatuses = [
-		{ label: 'Tất cả', value: 'all' },
-		{ label: 'Có sẵn', value: 'NORMAL' },
-		{ label: 'Đang cho mượn', value: 'BORROWED' },
-		{ label: 'Đang bảo trì', value: 'MAINTENANCE' },
-	];
+	// const deviceStatuses = [
+	//   { label: 'Tất cả', value: 'all' },
+	//   { label: 'Có sẵn', value: 'NORMAL' },
+	//   { label: 'Đang cho mượn', value: 'BORROWED' },
+	//   { label: 'Đang bảo trì', value: 'MAINTENANCE' },
+	// ];
 
 	useEffect(() => {
 		async function fetchDeviceTypes() {
@@ -37,7 +33,7 @@ const DeviceManagement: React.FC = () => {
 				if (response.data && response.data.types) {
 					const types = response.data.types.map((type: string) => ({
 						label: type === 'Other' ? 'Khác' : type,
-						value: type.toLowerCase().replace(/\s+/g, ''),
+						value: type,
 					}));
 					setDeviceTypes([{ label: 'Tất cả', value: 'all' }, ...types]);
 				}
@@ -52,6 +48,20 @@ const DeviceManagement: React.FC = () => {
 		setRefreshKey(Date.now());
 	};
 
+	const handleTabChange = (key: string) => {
+		setActiveTabKey(key);
+		setDeviceType('all');
+		setDeviceStatus('all');
+	};
+
+	const handleSearch = (value: string) => {
+		setSearchText(value);
+	};
+
+	const handleDeviceTypeChange = (value: string) => {
+		setDeviceType(value);
+	};
+
 	const items = [
 		{
 			key: '1',
@@ -61,7 +71,7 @@ const DeviceManagement: React.FC = () => {
 					key={refreshKey}
 					searchText={searchText}
 					deviceType={deviceType}
-					deviceStatus={'NORMAL'}
+					deviceStatus={deviceStatus}
 					onSuccess={handleRefresh}
 				/>
 			),
@@ -69,12 +79,28 @@ const DeviceManagement: React.FC = () => {
 		{
 			key: '2',
 			label: 'Đang cho mượn',
-			children: <BorrowedDevices key={refreshKey} searchText={searchText} onSuccess={handleRefresh} />,
+			children: (
+				<BorrowedDevices
+					key={refreshKey}
+					searchText={searchText}
+					deviceType={deviceType}
+					deviceStatus={deviceStatus}
+					onSuccess={handleRefresh}
+				/>
+			),
 		},
 		{
 			key: '3',
 			label: 'Đang bảo trì',
-			children: <MaintenanceDevices key={refreshKey} searchText={searchText} onSuccess={handleRefresh} />,
+			children: (
+				<MaintenanceDevices
+					key={refreshKey}
+					searchText={searchText}
+					deviceType={deviceType}
+					deviceStatus={deviceStatus}
+					onSuccess={handleRefresh}
+				/>
+			),
 		},
 	];
 
@@ -86,11 +112,12 @@ const DeviceManagement: React.FC = () => {
 						Thêm thiết bị mới
 					</Button>
 				</Col>
-				<Col span={16}>
+				<Col span={20}>
 					<Search
 						placeholder='Tìm kiếm thiết bị...'
-						onSearch={(value) => setSearchText(value)}
+						onChange={(e) => handleSearch(e.target.value)}
 						style={{ width: '100%' }}
+						allowClear
 					/>
 				</Col>
 				<Col span={4}>
@@ -99,29 +126,15 @@ const DeviceManagement: React.FC = () => {
 						placeholder='Chọn loại thiết bị'
 						options={deviceTypes}
 						value={deviceType}
-						onChange={(value) => setDeviceType(value)}
-					/>
-				</Col>
-				<Col span={4}>
-					<Select
-						style={{ width: '100%' }}
-						placeholder='Chọn trạng thái'
-						options={deviceStatuses}
-						value={deviceStatus}
-						onChange={(value) => setDeviceStatus(value)}
+						onChange={handleDeviceTypeChange}
+						allowClear
 					/>
 				</Col>
 			</Row>
 
-			<Tabs activeKey={activeTabKey} onChange={(key) => setActiveTabKey(key)} items={items} />
-			<AddDeviceModal
-				visible={isModalVisible}
-				onCancel={() => setIsModalVisible(false)}
-				onSuccess={() => {
-					setIsModalVisible(false);
-					handleRefresh();
-				}}
-			/>
+			<Tabs activeKey={activeTabKey} onChange={handleTabChange} items={items} />
+
+			<AddDeviceModal visible={isModalVisible} onCancel={() => setIsModalVisible(false)} onSuccess={handleRefresh} />
 		</Card>
 	);
 };

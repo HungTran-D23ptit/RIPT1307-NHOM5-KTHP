@@ -1,5 +1,5 @@
-import axios from '@/utils/axios';
 import { ip3 } from '@/utils/ip';
+import rootAPI from '../services/rootAPI';
 
 const useInitService = (url: string, ip?: string) => {
 	const finalIp = ip ?? ip3;
@@ -10,61 +10,61 @@ const useInitService = (url: string, ip?: string) => {
 		isAbsolutePath?: boolean,
 	) => {
 		const finalPath = isAbsolutePath ? `${finalIp}/${path}` : `${finalIp}/${url}/${path ?? ''}`;
-		return axios.get(finalPath, { params: payload });
+		return rootAPI.get(finalPath, { params: payload });
 	};
 
 	const postService = (payload: any) => {
-		return axios.post(`${finalIp}/${url}`, payload);
+		return rootAPI.post(`${finalIp}/${url}`, payload);
 	};
 
 	const putService = (id: string | number, payload: any) => {
-		return axios.put(`${finalIp}/${url}/${id}`, payload);
+		return rootAPI.put(`${finalIp}/${url}/${id}`, payload);
 	};
 
 	const putManyService = (ids: (string | number)[], update: any) => {
-		return axios.put(`${finalIp}/${url}/many/ids`, { ids, update });
+		return rootAPI.put(`${finalIp}/${url}/many/ids`, { ids, update });
 	};
 
 	const deleteService = (id: string | number, silent?: boolean) => {
-		return axios.delete(`${finalIp}/${url}/${id}`, { data: { silent } });
+		return rootAPI.delete(`${finalIp}/${url}/${id}`, { data: { silent } });
 	};
 
 	const deleteManyService = (ids: (string | number)[], silent?: boolean) => {
-		return axios.delete(`${finalIp}/${url}/many/ids`, { data: { silent, ids } });
+		return rootAPI.delete(`${finalIp}/${url}/many/ids`, { data: { silent, ids } });
 	};
 
 	const getAllService = (payload?: { condition?: any; sort?: any }, path?: string) => {
-		return axios.get(`${finalIp}/${url}/${path || 'many'}`, { params: payload });
+		return rootAPI.get(`${finalIp}/${url}/${path || 'many'}`, { params: payload });
 	};
 
 	const getByIdService = (id: string | number) => {
-		return axios.get(`${finalIp}/${url}/${id}`);
+		return rootAPI.get(`${finalIp}/${url}/${id}`);
 	};
 
 	const getImportHeaders = () => {
-		return axios.get(`${finalIp}/${url}/import/definition`, { data: { silent: true } });
+		return rootAPI.get(`${finalIp}/${url}/import/definition`, { data: { silent: true } });
 	};
 
 	const getImportTemplate = () => {
-		return axios.get(`${finalIp}/${url}/import/template/xlsx`, {
+		return rootAPI.get(`${finalIp}/${url}/import/template/xlsx`, {
 			responseType: 'arraybuffer',
 		});
 	};
 
 	const postValidateImport = (payload: any) => {
-		return axios.post(`${finalIp}/${url}/import/validate`, payload);
+		return rootAPI.post(`${finalIp}/${url}/import/validate`, payload);
 	};
 
 	const postExecuteImport = (payload: any) => {
-		return axios.post(`${finalIp}/${url}/import/insert`, payload);
+		return rootAPI.post(`${finalIp}/${url}/import/insert`, payload);
 	};
 
 	const getExportFields = () => {
-		return axios.get(`${finalIp}/${url}/export/definition`, { data: { silent: true } });
+		return rootAPI.get(`${finalIp}/${url}/export/definition`, { data: { silent: true } });
 	};
 
 	const postExport = (payload: { ids?: string[]; definitions: any[] }, params?: { condition?: any; filters?: any }) => {
-		return axios.post(`${finalIp}/${url}/export/xlsx`, payload, {
+		return rootAPI.post(`${finalIp}/${url}/export/xlsx`, payload, {
 			params,
 			responseType: 'arraybuffer',
 		});

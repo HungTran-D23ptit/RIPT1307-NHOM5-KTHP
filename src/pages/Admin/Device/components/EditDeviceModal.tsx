@@ -1,23 +1,15 @@
-import { updateDevice } from '@/services/Admin/Device/device';
-import rootAPI from '@/services/rootAPI';
+import { useEditDevice } from '@/models/Admin/Device/useEditDevice';
+import { EditDeviceModalProps } from '@/services/Admin/Device/device';
 import { UploadOutlined } from '@ant-design/icons';
 import { Form, Input, InputNumber, message, Modal, Select, Upload } from 'antd';
 import type { UploadProps } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
 import React, { useEffect, useState } from 'react';
 
-interface EditDeviceModalProps {
-	visible: boolean;
-	onCancel: () => void;
-	onSuccess: () => void;
-	initialData: any;
-}
-
 const EditDeviceModal: React.FC<EditDeviceModalProps> = ({ visible, onCancel, onSuccess, initialData }) => {
 	const [form] = Form.useForm();
-	const [loading, setLoading] = useState(false);
 	const [fileList, setFileList] = useState<UploadFile[]>([]);
-	const [deviceTypes, setDeviceTypes] = useState<{ label: string; value: string }[]>([]);
+	const { loading, deviceTypes, handleSubmit } = useEditDevice(initialData, onSuccess);
 
 	useEffect(() => {
 		if (initialData) {
@@ -29,7 +21,7 @@ const EditDeviceModal: React.FC<EditDeviceModalProps> = ({ visible, onCancel, on
 				type: initialData.type,
 				status: initialData.status,
 			});
-			if (initialData.image_url) {
+			if (initialData.image_url && initialData.image_url.trim() !== '') {
 				setFileList([
 					{
 						uid: '-1',
@@ -38,91 +30,18 @@ const EditDeviceModal: React.FC<EditDeviceModalProps> = ({ visible, onCancel, on
 						url: initialData.image_url,
 					},
 				]);
+			} else {
+				setFileList([]);
 			}
 		}
 	}, [initialData, form]);
 
-	useEffect(() => {
-		async function fetchDeviceTypes() {
-			try {
-				const response = await rootAPI.get('/admin/device/types');
-				if (response.data && response.data.types) {
-					const types = response.data.types.map((type: string) => ({
-						label: type === 'Other' ? 'Khác' : type,
-						value: type,
-					}));
-					setDeviceTypes(types);
-				}
-			} catch (error) {
-				message.error('Không thể tải danh sách loại thiết bị');
-			}
-		}
-		fetchDeviceTypes();
-	}, []);
-
-	const handleSubmit = async () => {
+	const onSubmit = async () => {
 		try {
 			const values = await form.validateFields();
-			setLoading(true);
-
-			const validStatuses = ['NORMAL', 'MAINTENANCE'];
-			if (!validStatuses.includes(values.status)) {
-				message.error('Trạng thái không hợp lệ');
-				setLoading(false);
-				return;
-			}
-
-			const validTypes = deviceTypes.map((dt) => dt.value);
-			if (!validTypes.includes(values.type)) {
-				message.error('Loại thiết bị không hợp lệ');
-				setLoading(false);
-				return;
-			}
-
-			const formData = new FormData();
-			formData.append('name', values.name);
-			formData.append('code', values.code);
-			formData.append('type', values.type);
-			formData.append('description', values.description || '');
-			formData.append('quantity', values.quantity.toString());
-			formData.append('status', values.status);
-
-			if (fileList[0]?.originFileObj) {
-				const file = fileList[0].originFileObj;
-				const fileType = file.type.toLowerCase();
-				const isJpgOrPng = fileType === 'image/jpeg' || fileType === 'image/png' || fileType === 'image/jpg';
-				if (!isJpgOrPng) {
-					message.error('Chỉ chấp nhận file JPG/PNG!');
-					setLoading(false);
-					return;
-				}
-				formData.append('image', file, file.name);
-			} else if (!fileList.length && initialData.image_url) {
-				formData.append('image', 'remove');
-			}
-
-			await updateDevice(initialData._id, formData);
-			message.success('Cập nhật thiết bị thành công');
-			onSuccess();
-		} catch (error: any) {
-			if (error.response?.data?.detail) {
-				const errors = error.response.data.detail;
-				Object.entries(errors).forEach(([field, msg]: [string, any]) => {
-					const vietnameseMessages: Record<string, string> = {
-						'Ảnh thiết bị does not match any of the allowed types':
-							'Định dạng ảnh không hợp lệ. Vui lòng sử dụng file ảnh (jpg, png, jpeg)',
-						'Trạng thái không hợp lệ.': 'Trạng thái thiết bị không hợp lệ. Vui lòng chọn trạng thái khác.',
-						'Loại thiết bị không hợp lệ.': 'Loại thiết bị không hợp lệ. Vui lòng chọn loại khác.',
-					};
-					message.error(vietnameseMessages[msg] || msg);
-				});
-			} else if (error.response?.data?.message) {
-				message.error('Yêu cầu không hợp lệ. Vui lòng kiểm tra lại thông tin');
-			} else {
-				message.error('Không thể cập nhật thiết bị. Vui lòng thử lại sau');
-			}
-		} finally {
-			setLoading(false);
+			await handleSubmit(values, fileList);
+		} catch (error) {
+			// Form validation errors are handled by antd
 		}
 	};
 
@@ -131,14 +50,14 @@ const EditDeviceModal: React.FC<EditDeviceModalProps> = ({ visible, onCancel, on
 			const isImage = file.type.startsWith('image/');
 			if (!isImage) {
 				message.error('Chỉ có thể tải lên file ảnh!');
-				return false;
+				return Upload.LIST_IGNORE;
 			}
 			const isLt5M = file.size / 1024 / 1024 < 5;
 			if (!isLt5M) {
 				message.error('Kích thước ảnh phải nhỏ hơn 5MB!');
-				return false;
+				return Upload.LIST_IGNORE;
 			}
-			return false;
+			return true;
 		},
 		fileList,
 		onChange: ({ fileList: newFileList }) => {
@@ -153,7 +72,7 @@ const EditDeviceModal: React.FC<EditDeviceModalProps> = ({ visible, onCancel, on
 	];
 
 	return (
-		<Modal title='Cập nhật thiết bị' open={visible} onCancel={onCancel} onOk={handleSubmit} confirmLoading={loading}>
+		<Modal title='Cập nhật thiết bị' open={visible} onCancel={onCancel} onOk={onSubmit} confirmLoading={loading}>
 			<Form form={form} layout='vertical'>
 				<Form.Item
 					name='name'

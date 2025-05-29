@@ -8,9 +8,8 @@ import { oidcConfig } from '@/utils/oidcConfig';
 import { ConfigProvider, notification } from 'antd';
 import queryString from 'query-string';
 import { useEffect, type FC } from 'react';
-import { AuthProvider, hasAuthParams, useAuth } from 'react-oidc-context';
+import { AuthProvider, useAuth } from 'react-oidc-context';
 import { history, useModel } from 'umi';
-import LoadingPage from '../Loading';
 import { unAuthPaths, unCheckPermissionPaths } from './constant';
 
 let OIDCBounderHandlers: ReturnType<typeof useAuthActions> | null = null;
@@ -20,7 +19,7 @@ const OIDCBounder_: FC = ({ children }) => {
 	const auth = useAuth();
 	const actions = useAuthActions();
 	const isUnauth = unAuthPaths.some((path) => window.location.pathname.includes(path));
-	let timeout: any = null;
+	const timeout: any = null;
 
 	const handleAxios = (access_token: string) => {
 		axios.defaults.headers.common.Authorization = `Bearer ${access_token}`;

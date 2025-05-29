@@ -1,5 +1,5 @@
-import axios from '@/utils/axios';
 import { ip3 } from '@/utils/ip';
+import rootAPI from './rootAPI';
 
 export enum EFileScope {
 	PUBLIC = 'Public',
@@ -25,7 +25,7 @@ export async function uploadFile(payload: { file: string | Blob; scope: EFileSco
 	const form = new FormData();
 	form.append('file', payload?.file);
 	form.append('scope', payload?.scope);
-	return axios.post(`${ip3}/file`, form);
+	return rootAPI.post(`${ip3}/file`, form);
 }
 
 /**
@@ -73,5 +73,5 @@ export const buildUpLoadMultiFile = async (
 };
 
 export const getFileInfo = (id: string, ip?: string) => {
-	return axios.get(`${ip ?? ip3}/file/${id}/info`);
+	return rootAPI.get(`${ip ?? ip3}/file/${id}/info`);
 };
