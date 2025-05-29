@@ -1,5 +1,5 @@
 import rootAPI from '../../rootAPI';
-import { LoginCredentials } from './typing';
+import type { LoginCredentials } from './tying';
 
 export async function loginAdmin(credentials: LoginCredentials) {
 	return rootAPI.post('/admin/auth/login', credentials);
