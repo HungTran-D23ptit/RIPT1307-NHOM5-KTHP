@@ -1,35 +1,10 @@
-import { getBorrowedDevices } from '@/services/Admin/Device/device';
-import { message, Table, Tag } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { useBorrowedDevices } from '@/models/Admin/Device/useBorrowedDevices';
+import { BorrowedDevicesProps } from '@/services/Admin/Device/device';
+import { Table, Tag } from 'antd';
+import React from 'react';
 
-const BorrowedDevices: React.FC<{
-	searchText: string;
-}> = ({ searchText }) => {
-	const [data, setData] = useState<any[]>([]);
-	const [loading, setLoading] = useState(false);
-	const [page, setPage] = useState(1);
-	const [total, setTotal] = useState(0);
-
-	const fetchData = async () => {
-		try {
-			setLoading(true);
-			const response = await getBorrowedDevices({
-				search: searchText,
-				page,
-				per_page: 10,
-			});
-			setData(response.data.data);
-			setTotal(response.data.total);
-		} catch (error) {
-			message.error('Không thể tải danh sách thiết bị đang mượn');
-		} finally {
-			setLoading(false);
-		}
-	};
-
-	useEffect(() => {
-		fetchData();
-	}, [searchText, page]);
+const BorrowedDevices: React.FC<BorrowedDevicesProps> = ({ searchText }) => {
+	const { data, loading, page, total, setPage, getStatusTag } = useBorrowedDevices(searchText);
 
 	const columns = [
 		{
@@ -62,17 +37,7 @@ const BorrowedDevices: React.FC<{
 			dataIndex: 'status',
 			key: 'status',
 			render: (status: string) => {
-				let color = 'blue';
-				let text = 'Đang mượn';
-
-				if (status === 'RETURNED') {
-					color = 'green';
-					text = 'Đã trả';
-				} else if (status === 'LATE') {
-					color = 'red';
-					text = 'Trả trễ';
-				}
-
+				const { color, text } = getStatusTag(status);
 				return <Tag color={color}>{text}</Tag>;
 			},
 		},
