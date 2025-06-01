@@ -46,8 +46,7 @@ export default () => {
 	};
 
 	const handleLogin = async (email: string, password: string) => {
-		setLoading(true);
-		try {
+		setLoading(true);		try {
 			const adminResponse = await loginAdmin({ email, password });
 			console.log('Admin login response:', adminResponse);
 
@@ -55,7 +54,6 @@ export default () => {
 				const token = adminResponse.data.data.access_token;
 				if (token) {
 					localStorage.setItem('token', token);
-					localStorage.setItem('user', JSON.stringify(adminResponse.data.data.user || {}));
 					localStorage.setItem('role', 'admin');
 					message.success(`Chào mừng quản trị viên`);
 					history.push('/admin/dashboard');

@@ -43,15 +43,12 @@ export default () => {
 			default:
 				message.error(errorMessage || 'Đã xảy ra lỗi. Vui lòng thử lại sau');
 		}
-	};
-
-	const handleLogin = async (email: string, password: string) => {
+	};	const handleLogin = async (email: string, password: string) => {
 		setLoading(true);
 		try {
 			const userResponse = await loginUser({ email, password });
-			if (userResponse?.data) {
-				localStorage.setItem('token', userResponse.data.access_token);
-				localStorage.setItem('user', JSON.stringify(userResponse.data.user));
+			if (userResponse?.data?.data) {
+				localStorage.setItem('token', userResponse.data.data.access_token);
 				localStorage.setItem('role', 'user');
 				message.success(`Chào mừng quay trở lại`);
 				history.push('/user/dashboard');
