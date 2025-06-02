@@ -30,10 +30,16 @@ const ThietBi = () => {
   }, [search, type, status]);
 
   const getStatusInfo = (device: DeviceResponse) => {
-    if (device.status === 'NORMAL' && device.quantity > 0) {
+    if (device.status === 'NORMAL' && device.quantity > 1) {
       return {
         status: 'Có sẵn',
         statusClass: 'thiet-bi__status-badge--available',
+        canBorrow: true
+      };
+    } else if (device.status === 'NORMAL' && device.quantity === 1) {
+      return {
+        status: 'Sắp hết',
+        statusClass: 'thiet-bi__status-badge--low-stock',
         canBorrow: true
       };
     } else if (device.status === 'NORMAL' && device.quantity === 0) {
