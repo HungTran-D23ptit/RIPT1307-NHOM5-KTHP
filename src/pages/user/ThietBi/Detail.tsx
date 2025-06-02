@@ -89,6 +89,7 @@ const Detail = () => {
               size="large"
               className="thiet-bi__detail-borrow-btn"
               disabled={device.status !== 'NORMAL' || device.quantity < 1}
+              onClick={() => history.push(`/user/devices/${device._id}/borrow-requests`)}
             >
               Mượn ngay
             </Button>

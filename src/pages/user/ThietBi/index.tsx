@@ -115,7 +115,8 @@ const ThietBi = () => {
                 <button 
                   className="thiet-bi__button thiet-bi__button--primary" 
                   disabled={!statusInfo.canBorrow}
-                >
+                  onClick={() => history.push(`/user/devices/${device._id}/borrow-requests`)}
+                > 
                   {statusInfo.canBorrow ? 'Mượn ngay' : 'Không thể mượn'}
                 </button>
               </div>
