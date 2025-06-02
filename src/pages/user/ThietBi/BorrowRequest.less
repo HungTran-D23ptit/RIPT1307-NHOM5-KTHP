@@ -1,0 +1,96 @@
+.borrow-request-container {
+  .back-link {
+    color: #3b5cff;
+    font-size: 18px;
+    margin-bottom: 16px;
+    display: inline-block;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #1a3a99;
+      text-decoration: underline;
+    }
+  }
+
+  .borrow-request-card {
+    max-width: 800px;
+    margin: 32px auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .page-title {
+    margin-top: 16px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+
+    .device-name {
+      color: #3b5cff;
+    }
+  }
+
+  .page-subtitle {
+    margin-bottom: 16px;
+    color: #666;
+  }
+
+  .device-detail-card {
+    background: #fafbff;
+    border: none;
+    border-radius: 8px;
+    padding: 16px;
+
+    img {
+      width: 100%;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .device-name-bold {
+      margin-top: 12px;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .device-type {
+      color: #888;
+      font-size: 14px;
+    }
+
+    .device-quantity {
+      margin-top: 8px;
+      font-size: 14px;
+
+      b {
+        font-weight: bold;
+      }
+    }
+  }
+
+  .form-card {
+    border: none;
+
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 500;
+      color: #555;
+    }
+
+    .ant-picker,
+    .ant-input-number,
+    .ant-input-textarea {
+      width: 100%;
+      margin-bottom: 12px;
+    }
+  }
+
+  .form-actions {
+    margin-top: 24px;
+
+    .ant-btn {
+      margin-left: 8px;
+    }
+  }
+} 

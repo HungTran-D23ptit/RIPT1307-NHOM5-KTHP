@@ -63,6 +63,11 @@
 		layout: true,
 	},
 	{
+		path: '/user/devices/:id/borrow-requests',
+		component: './user/ThietBi/BorrowRequest',
+		layout: true,
+	},
+	{
 		path: '/user/borrow-requests',
 		name: 'Yêu cầu mượn của tôi',
 		component: './user/YeuCauMuon',
