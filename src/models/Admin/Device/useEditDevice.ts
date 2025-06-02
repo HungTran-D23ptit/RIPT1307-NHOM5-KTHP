@@ -1,6 +1,5 @@
-import { updateDevice } from '@/services/Admin/Device/device';
+import { getDeviceTypes, updateDevice } from '@/services/Admin/Device/device';
 import { DeviceFormData, DeviceResponse, DeviceType } from '@/services/Admin/Device/typing';
-import rootAPI from '@/services/rootAPI';
 import { message } from 'antd';
 import { useEffect, useState } from 'react';
 
@@ -11,7 +10,7 @@ export const useEditDevice = (initialData: DeviceResponse, onSuccess: () => void
 	// ✅ Đặt function declaration lên trước
 	async function fetchDeviceTypes() {
 		try {
-			const response = await rootAPI.get('/admin/device/types');
+			const response = await getDeviceTypes();
 			if (response.data && response.data.types) {
 				const types = response.data.types.map((type: string) => ({
 					label: type === 'Other' ? 'Khác' : type,
@@ -44,27 +43,34 @@ export const useEditDevice = (initialData: DeviceResponse, onSuccess: () => void
 				return false;
 			}
 
-			const formData = new FormData();
-			formData.append('status', values.status || 'NORMAL');
-			formData.append('type', values.type);
-			formData.append('name', values.name);
-			formData.append('code', values.code);
-			if (values.description) {
-				formData.append('description', values.description);
-			}
-			formData.append('quantity', values.quantity.toString());
+			const updateData: any = {
+				status: values.status,
+				type: values.type,
+				name: values.name,
+				code: values.code,
+				description: values.description,
+				quantity: values.quantity,
+			};
 
 			if (fileList[0]?.originFileObj) {
-				formData.append('image_url', fileList[0].originFileObj);
+				const file = fileList[0].originFileObj;
+				const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg';
+				if (!isJpgOrPng) {
+					message.error('Chỉ chấp nhận file JPG/PNG!');
+					return false;
+				}
+				updateData.image_url = file;
 			} else if (!fileList.length && initialData.image_url) {
-				formData.append('image', 'remove');
+				updateData.image = 'remove';
 			}
 
-			await updateDevice(initialData._id, formData);
+			console.log('Sending update data:', updateData); // Debug log
+			await updateDevice(initialData._id, updateData);
 			message.success('Cập nhật thiết bị thành công');
 			onSuccess();
 			return true;
 		} catch (error: any) {
+			console.error('Update error:', error); // Debug log
 			if (error.response?.data?.detail) {
 				const errors = error.response.data.detail;
 				Object.entries(errors).forEach(([field, msg]: [string, any]) => {

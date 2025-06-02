@@ -1,4 +1,4 @@
-import { DeviceResponse, getMaintenanceDevices, updateDevice } from '@/services/Admin/Device/device';
+import { DeviceResponse, getDevices, updateDevice } from '@/services/Admin/Device/device';
 import { message } from 'antd';
 import { useEffect, useState } from 'react';
 
@@ -19,10 +19,10 @@ export const useMaintenanceDevices = (
 		const fetchDevices = async () => {
 			try {
 				setLoading(true);
-				const response = await getMaintenanceDevices({
+				const response = await getDevices({
 					search: searchText,
 					type: deviceType === 'all' ? undefined : deviceType,
-					status: deviceStatus === 'all' ? undefined : deviceStatus,
+					status: deviceStatus,
 					page,
 					per_page: 10,
 				});
@@ -53,7 +53,7 @@ export const useMaintenanceDevices = (
 			await updateDevice(id, {
 				status: 'NORMAL',
 			});
-
+			message.success('Cập nhật trạng thái thành công');
 			if (onSuccess) onSuccess();
 		} catch (error) {
 			message.error('Không thể cập nhật thiết bị');

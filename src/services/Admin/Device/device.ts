@@ -7,14 +7,16 @@ import {
 	DeviceResponse,
 	DeviceTableItem,
 	EditDeviceModalProps,
-	GetBorrowedDevicesParams,
-	GetDevicesParams,
-	GetMaintenanceDevicesParams,
 	MaintenanceDevicesProps,
-	UpdateDeviceData,
 } from './typing';
 
-export async function getDevices(params: GetDevicesParams) {
+export async function getDevices(params: {
+	status?: string;
+	type?: string;
+	search?: string;
+	page?: number;
+	per_page?: number;
+}) {
 	return rootAPI.get('/admin/device', { params });
 }
 
@@ -22,11 +24,17 @@ export async function createDevice(data: FormData) {
 	return rootAPI.post('/admin/device', data);
 }
 
-export async function getBorrowedDevices(params: GetBorrowedDevicesParams) {
+export async function getBorrowedDevices(params: {
+	status?: string;
+	type?: string;
+	search?: string;
+	page?: number;
+	per_page?: number;
+}) {
 	return rootAPI.get('/admin/device/approved', { params });
 }
 
-export async function getMaintenanceDevices(params: GetMaintenanceDevicesParams) {
+export async function getMaintenanceDevices(params: { search?: string; page?: number; per_page?: number }) {
 	return rootAPI.get('/admin/device', {
 		params: {
 			...params,
@@ -35,11 +43,8 @@ export async function getMaintenanceDevices(params: GetMaintenanceDevicesParams)
 	});
 }
 
-export async function updateDevice(id: string, data: UpdateDeviceData | FormData) {
+export async function updateDevice(id: string, data: any) {
 	if (data instanceof FormData) {
-		// Log FormData contents for debugging
-		console.log('Sending FormData with file:', data.get('file'));
-
 		return rootAPI.put(`/admin/device/${id}`, data, {
 			headers: {
 				'Content-Type': 'multipart/form-data',
@@ -48,13 +53,11 @@ export async function updateDevice(id: string, data: UpdateDeviceData | FormData
 	}
 
 	// If data contains a file, convert to FormData
-	if (data.file instanceof File || data.image_url instanceof File) {
+	if (data.image_url instanceof File) {
 		const formData = new FormData();
 		Object.entries(data).forEach(([key, value]) => {
-			if (key === 'file' && value instanceof File) {
-				formData.append('file', value);
-			} else if (key === 'image_url' && value instanceof File) {
-				formData.append('file', value);
+			if (key === 'image_url' && value instanceof File) {
+				formData.append('image', value);
 			} else if (value !== undefined && value !== null) {
 				formData.append(key, value.toString());
 			}
@@ -73,6 +76,10 @@ export async function deleteDevice(id: string) {
 	return rootAPI.delete(`/admin/device/${id}`);
 }
 
+export async function getDeviceTypes() {
+	return rootAPI.get('/admin/device/types');
+}
+
 export type {
 	DeviceFormData,
 	DeviceResponse,
@@ -82,8 +89,4 @@ export type {
 	AvailableDevicesProps,
 	BorrowedDevicesProps,
 	MaintenanceDevicesProps,
-	GetDevicesParams,
-	GetBorrowedDevicesParams,
-	GetMaintenanceDevicesParams,
-	UpdateDeviceData,
 };
