@@ -5,6 +5,7 @@ const Settings: LayoutSettings & {
 	logo?: string;
 	borderRadiusBase: string;
 	siderWidth: number;
+	headerColor?: string;
 } = {
 	navTheme: 'light',
 	primaryColor: process.env.APP_CONFIG_PRIMARY_COLOR,
@@ -14,13 +15,15 @@ const Settings: LayoutSettings & {
 	fixedHeader: false,
 	fixSiderbar: true,
 	colorWeak: false,
-	title: 'LẬP TRÌNH WEB - RIPT',
+	title: 'BorrowEase',
 	pwa: false,
 	logo: '/logo.png',
 	iconfontUrl: '',
 	headerTheme: 'light',
 	headerHeight: 60,
 	siderWidth: 220,
+	headerColor: '#000000',
 };
 
 export default Settings;
+

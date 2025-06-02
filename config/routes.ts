@@ -58,6 +58,11 @@
 		icon: 'LaptopOutlined',
 	},
 	{
+		path: '/user/devices/:id',
+		component: './user/ThietBi/Detail',
+		layout: true,
+	},
+	{
 		path: '/user/borrow-requests',
 		name: 'Yêu cầu mượn của tôi',
 		component: './user/YeuCauMuon',
