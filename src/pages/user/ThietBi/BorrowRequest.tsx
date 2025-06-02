@@ -46,7 +46,7 @@ const BorrowRequest = () => {
 
   return (
     <div className="borrow-request-container">
-      <a onClick={() => history.goBack()} className="back-link">{'<-- Quay lại danh sách thiết bị'}</a>
+      <a onClick={() => history.goBack()} className="back-link">{'<-- Quay lại'}</a>
       <Card className="borrow-request-card">
         <h2 className="page-title">Mượn <span className="device-name">{device?.name}</span></h2>
         <div className="page-subtitle">Điền vào biểu mẫu bên dưới để yêu cầu thiết bị này.</div>

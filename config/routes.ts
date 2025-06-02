@@ -44,6 +44,12 @@
 		component: './Admin/Device',
 		icon: 'LaptopOutlined',
 	},
+	{
+		path: '/admin/borrow-requests',
+		name: 'Quản lý yêu cầu mượn',
+		component: './Admin/BorrowRequest',
+		icon: 'FormOutlined',
+	},
 	// User routes
 	{
 		path: '/user/dashboard',
