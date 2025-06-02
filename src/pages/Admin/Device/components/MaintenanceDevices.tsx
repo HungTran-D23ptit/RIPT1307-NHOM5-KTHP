@@ -3,9 +3,11 @@ import { MaintenanceDevicesProps } from '@/services/Admin/Device/device';
 import { Button, Card, Col, Image, Row, Tag } from 'antd';
 import React from 'react';
 
-const MaintenanceDevices: React.FC<MaintenanceDevicesProps> = ({ searchText, onSuccess }) => {
+const MaintenanceDevices: React.FC<MaintenanceDevicesProps> = ({ searchText, deviceType, deviceStatus, onSuccess }) => {
 	const { devices, loading, handleCompleteMaintenance, getStatusTag, getDeviceTypeLabel } = useMaintenanceDevices(
 		searchText,
+		deviceType,
+		deviceStatus,
 		onSuccess,
 	);
 

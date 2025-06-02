@@ -22,7 +22,7 @@ export const useAvailableDevices = (
 				const response = await getDevices({
 					search: searchText,
 					type: deviceType === 'all' ? undefined : deviceType,
-					status: deviceStatus === 'all' ? undefined : deviceStatus,
+					status: deviceStatus,
 					page,
 					per_page: 10,
 				});
@@ -48,10 +48,10 @@ export const useAvailableDevices = (
 		};
 	}, [searchText, deviceType, deviceStatus, page]);
 
-	const handleUpdate = async (id: string) => {
+	const handleUpdate = async (id: string, newStatus: string) => {
 		try {
 			await updateDevice(id, {
-				status: 'MAINTENANCE',
+				status: newStatus,
 			});
 			message.success('Cập nhật trạng thái thành công');
 			if (onSuccess) onSuccess();
@@ -71,10 +71,22 @@ export const useAvailableDevices = (
 	};
 
 	const getStatusTag = (status: string) => {
-		return {
-			color: 'green',
-			text: 'Có sẵn',
+		const statusMap = {
+			NORMAL: {
+				color: 'green',
+				text: 'Có sẵn',
+			},
+			MAINTENANCE: {
+				color: 'purple',
+				text: 'Đang bảo trì',
+			},
 		};
+		return (
+			statusMap[status as keyof typeof statusMap] || {
+				color: 'default',
+				text: status,
+			}
+		);
 	};
 
 	const getDeviceTypeLabel = (type: string | null) => {

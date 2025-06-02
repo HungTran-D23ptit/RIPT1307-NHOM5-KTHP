@@ -7,7 +7,7 @@ import EditDeviceModal from './EditDeviceModal';
 const AvailableDevices: React.FC<AvailableDevicesProps> = ({ searchText, deviceType, deviceStatus, onSuccess }) => {
 	const [editModalVisible, setEditModalVisible] = useState(false);
 	const [selectedDevice, setSelectedDevice] = useState<any>(null);
-	const { devices, loading, handleUpdate, handleDelete, getStatusTag, getDeviceTypeLabel } = useAvailableDevices(
+	const { devices, loading, handleDelete, getStatusTag, getDeviceTypeLabel } = useAvailableDevices(
 		searchText,
 		deviceType,
 		deviceStatus,
