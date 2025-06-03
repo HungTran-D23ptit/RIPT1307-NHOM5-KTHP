@@ -26,4 +26,4 @@ const BorrowRequestManagement: React.FC = () => {
   );
 };
 
-export default BorrowRequestManagement; 
+export default BorrowRequestManagement;

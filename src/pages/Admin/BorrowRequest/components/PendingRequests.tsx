@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Tag, Button, message } from 'antd';
-import { getBorrowRequests } from '@/services/Admin/borrowRequest';
+import { Table, Tag, Button, message, Modal, Input } from 'antd';
+import { getBorrowRequests, approveBorrowRequest, rejectBorrowRequest } from '@/services/Admin/borrowRequest';
 import moment from 'moment';
 
 interface PendingRequest {
@@ -22,6 +22,9 @@ const PendingRequests: React.FC = () => {
     pageSize: 10,
     total: 0,
   });
+  const [isRejectModalVisible, setIsRejectModalVisible] = useState(false);
+  const [rejectReason, setRejectReason] = useState('');
+  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
 
   const fetchData = async (page = 1, pageSize = 10) => {
     setLoading(true);
@@ -50,6 +53,52 @@ const PendingRequests: React.FC = () => {
 
   const handleTableChange = (pagination: any) => {
     fetchData(pagination.current, pagination.pageSize);
+  };
+
+  const handleApprove = async (id: string) => {
+    setLoading(true);
+    try {
+      await approveBorrowRequest(id);
+      message.success('Duyệt đơn mượn thành công');
+      fetchData(pagination.current, pagination.pageSize); // Refresh data
+    } catch (error: any) {
+      message.error(error?.response?.data?.message || 'Duyệt đơn mượn thất bại');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleReject = (id: string) => {
+    setSelectedRequestId(id);
+    setIsRejectModalVisible(true);
+  };
+
+  const handleRejectConfirm = async () => {
+    if (!rejectReason) {
+      message.error('Vui lòng nhập lý do từ chối');
+      return;
+    }
+    if (selectedRequestId) {
+      setLoading(true);
+      try {
+        await rejectBorrowRequest(selectedRequestId, rejectReason);
+        message.success('Từ chối đơn mượn thành công');
+        setIsRejectModalVisible(false);
+        setRejectReason('');
+        setSelectedRequestId(null);
+        fetchData(pagination.current, pagination.pageSize); // Refresh data
+      } catch (error: any) {
+        message.error(error?.response?.data?.message || 'Từ chối đơn mượn thất bại');
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleRejectCancel = () => {
+    setIsRejectModalVisible(false);
+    setRejectReason('');
+    setSelectedRequestId(null);
   };
 
   const columns = [
@@ -97,22 +146,41 @@ const PendingRequests: React.FC = () => {
       key: 'action',
       render: (text: any, record: PendingRequest) => (
         <span>
-          <Button type="primary" style={{ marginRight: 8 }}>Duyệt</Button>
-          <Button danger>Từ chối</Button>
+          <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleApprove(record._id)}>Duyệt</Button>
+          <Button danger onClick={() => handleReject(record._id)}>Từ chối</Button>
         </span>
       ),
     },
   ];
 
   return (
-    <Table
-      columns={columns}
-      dataSource={data}
-      loading={loading}
-      rowKey="_id"
-      pagination={pagination}
-      onChange={handleTableChange}
-    />
+    <>
+      <Table
+        columns={columns}
+        dataSource={data}
+        loading={loading}
+        rowKey="_id"
+        pagination={pagination}
+        onChange={handleTableChange}
+      />
+      <Modal
+        title="Lý do từ chối"
+        visible={isRejectModalVisible}
+        onOk={handleRejectConfirm}
+        onCancel={handleRejectCancel}
+        confirmLoading={loading}
+        okText="Xác nhận từ chối"
+        cancelText="Hủy"
+      >
+        <p>Vui lòng nhập lý do từ chối</p>
+        <Input.TextArea
+          rows={4}
+          value={rejectReason}
+          onChange={(e) => setRejectReason(e.target.value)}
+          placeholder="Nhập lý do từ chối..."
+        />
+      </Modal>
+    </>
   );
 };
 
