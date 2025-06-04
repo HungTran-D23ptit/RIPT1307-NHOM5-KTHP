@@ -50,6 +50,12 @@
 		component: './Admin/BorrowRequest',
 		icon: 'FormOutlined',
 	},
+	{
+		path: '/admin/users',
+		name: 'Quản lý người dùng',
+		component: './Admin/User',
+		icon: 'TeamOutlined',
+	},
 	// User routes
 	{
 		path: '/user/dashboard',
