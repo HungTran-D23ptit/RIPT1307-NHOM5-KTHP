@@ -1,10 +1,29 @@
-import { Button, Card, Badge, Row, Col } from 'antd';
+import { Button, Card, Badge, Row, Col, Modal, message } from 'antd';
 import moment from 'moment';
 import type { RequestCardProps } from '@/services/User/AllRequest/FEtyping';
 import { STATUS_CONFIG } from '@/models/User/AllRequest/constants';
 import { handleCancelRequest, handleRequestExtension, handleRecreateRequest } from '@/models/User/AllRequest/requestCard';
+import { requestReturnDevice } from '@/services/User/AllRequest';
 
 const RequestCard = ({ item, onViewDetail, onRequestUpdate }: RequestCardProps) => {
+    const handleReturnDevice = () => {
+        Modal.confirm({
+            title: 'Xác nhận trả thiết bị',
+            content: 'Bạn có chắc chắn muốn trả thiết bị này không?',
+            okText: 'Xác nhận',
+            cancelText: 'Đóng',
+            onOk: async () => {
+                try {
+                    await requestReturnDevice(item._id);
+                    message.success('Yêu cầu trả thiết bị đã được gửi');
+                    onRequestUpdate?.();
+                } catch (error: any) {
+                    message.error(error.response?.data?.message || 'Không thể gửi yêu cầu trả thiết bị');
+                }
+            }
+        });
+    };
+
     return (
         <Card
             hoverable
@@ -102,17 +121,17 @@ const RequestCard = ({ item, onViewDetail, onRequestUpdate }: RequestCardProps) 
                                 Hủy yêu cầu
                             </Button>
                         )}
-                        {item.status === 'APPROVED' && (
+                        {(item.status === 'APPROVED' || item.status === 'RETURNING') && (
                             <Button
                                 block
-                                onClick={handleRequestExtension}
+                                onClick={handleReturnDevice}
                                 style={{ 
                                     borderRadius: 6,
                                     borderColor: STATUS_CONFIG.APPROVED.bgColor,
                                     color: STATUS_CONFIG.APPROVED.bgColor
                                 }}
                             >
-                                Gia hạn
+                                Trả thiết bị
                             </Button>
                         )}
                         {item.status === 'REJECTED' && (
