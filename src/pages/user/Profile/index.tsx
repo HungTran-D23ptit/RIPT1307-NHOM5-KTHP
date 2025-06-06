@@ -1,7 +1,8 @@
 import { Card, Form, Input, Button, Upload, message, DatePicker, Select, Row, Col } from 'antd';
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
-import { getUserProfile, updateUserProfile } from '@/services/User/Profile';
+import { getUserProfile, updateUserProfile, fetchUserProfileAndFormat, prepareProfileFormData, updateUserProfileWithFormData } from '@/services/User/Profile';
+import { handleAvatarUpload, handleRemoveAvatar, shouldShowUploadButton, shouldShowRemoveButton, handleFormSubmit } from '@/services/User/Profile/profileUtils';
 import moment from 'moment';
 
 const { Option } = Select;
@@ -14,79 +15,8 @@ const Profile = () => {
     const [newAvatarPreview, setNewAvatarPreview] = useState<string | null>(null);
 
     useEffect(() => {
-        fetchUserProfile();
+        fetchUserProfileAndFormat(form, setUserData, setLoading);
     }, []);
-
-    const fetchUserProfile = async () => {
-        setLoading(true);
-        try {
-            const response = await getUserProfile();
-            if (response.data && response.data.data) {
-                setUserData(response.data.data);
-                form.setFieldsValue({
-                    name: response.data.data.name,
-                    email: response.data.data.email,
-                    phone: response.data.data.phone,
-                    gender: response.data.data.gender,
-                    dob: response.data.data.dob ? moment(response.data.data.dob) : null,
-                    address: response.data.data.address,
-                    department: response.data.data.department,
-                });
-            }
-        } catch (error) {
-            message.error('Lỗi khi tải thông tin cá nhân.');
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const onFinish = async (values: any) => {
-        setLoading(true);
-        try {
-            const formData = new FormData();
-
-            // Append form values to FormData
-            Object.keys(values).forEach((key) => {
-                if (key === 'dob') {
-                    // Convert moment object to ISO string
-                    formData.append(key, values[key] ? values[key].toISOString() : '');
-                } else if (key !== 'avatar') { // Exclude avatar from normal fields
-                     // Append other fields as strings
-                    formData.append(key, values[key] === undefined || values[key] === null ? '' : String(values[key]));
-                }
-            });
-
-            // Add new avatar file to payload if selected
-            if (newAvatarFile) {
-                 formData.append('avatar', newAvatarFile);
-            } else if (userData?.avatar && form.getFieldValue('avatar') === '') { // Check if avatar was originally present and now cleared in form state
-                // If existing avatar was cleared, send 'remove' signal
-                 formData.append('avatar', 'remove');
-            } else if (userData?.avatar) {
-                // If no new file and existing avatar is still there, don't send avatar field
-                // Backend should keep the existing one
-            }
-            // Note: If the backend *requires* the avatar field even if not changed, you might need to send the old URL
-            // But based on the 'remove' option, sending nothing for avatar when it's unchanged seems reasonable.
-
-            // Update profile with FormData
-            const response = await updateUserProfile(formData);
-
-            if (response.data && response.data.data && response.data.data.user) {
-                message.success(response.data.data.message || 'Cập nhật thông tin thành công!');
-                setUserData(response.data.data.user);
-                 setNewAvatarFile(null); // Clear new file state on successful update
-                 setNewAvatarPreview(null); // Clear new preview state on successful update
-                 fetchUserProfile(); // Re-fetch data to update UI
-            }
-        } catch (error: any) {
-             message.error(error.response?.data?.message || 'Lỗi khi cập nhật thông tin.');
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const uploadButton = (
         <div>
@@ -94,6 +24,22 @@ const Profile = () => {
             <div style={{ marginTop: 8 }}>Chọn ảnh đại diện</div>
         </div>
     );
+
+    const onFinish = async (values: any) => {
+        await handleFormSubmit(
+            values,
+            newAvatarFile,
+            userData,
+            form,
+            setLoading,
+            setUserData,
+            setNewAvatarFile,
+            setNewAvatarPreview,
+            prepareProfileFormData,
+            updateUserProfileWithFormData,
+            fetchUserProfileAndFormat
+        );
+    };
 
     return (
         <div style={{ padding: '20px' }}>
@@ -120,33 +66,12 @@ const Profile = () => {
                                 listType="picture-card"
                                 className="avatar-uploader"
                                 showUploadList={false}
-                                onChange={(info) => {
-                                    if (info.file.status === 'done') {
-                                        message.success(`${info.file.name} file uploaded successfully.`);
-                                    } else if (info.file.status === 'error') {
-                                        message.error(`${info.file.name} file upload failed.`);
-                                    }
-
-                                    const reader = new FileReader();
-                                    reader.onload = (e: any) => {
-                                        setNewAvatarPreview(e.target.result as string);
-                                    };
-                                    reader.readAsDataURL(info.file.originFileObj as File);
-
-                                    setNewAvatarFile(info.file.originFileObj as File);
-
-                                }}
-
+                                onChange={(info) => handleAvatarUpload(info, setNewAvatarPreview, setNewAvatarFile)}
                             >
-                                {newAvatarFile || userData?.avatar ? null : uploadButton}
+                                {shouldShowUploadButton(newAvatarFile, userData) ? uploadButton : null}
                             </Upload>
-                            {userData?.avatar && !newAvatarFile && (
-                                 <Button type="link" danger onClick={() => {
-                                     setUserData({...userData, avatar: ''});
-                                     setNewAvatarFile(null);
-                                     setNewAvatarPreview(null);
-                                      form.setFieldsValue({ avatar: '' }); // Set form value to empty string for 'remove' signal
-                                 }}>
+                            {shouldShowRemoveButton(userData, newAvatarFile) && (
+                                 <Button type="link" danger onClick={() => handleRemoveAvatar(userData, setUserData, setNewAvatarFile, setNewAvatarPreview, form)}>
                                       Xóa ảnh đại diện
                                  </Button>
                             )}
