@@ -91,4 +91,11 @@
 		component: './user/LichSuMuon',
 		icon: 'HistoryOutlined',
 	},
+	{
+		path: '/user/profile',
+		name: 'Trang cá nhân',
+		component: './user/Profile',
+		icon: 'UserOutlined',
+	},
+	
 ];
