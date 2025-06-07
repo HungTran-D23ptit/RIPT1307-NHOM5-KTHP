@@ -62,6 +62,12 @@
 		component: './Admin/BorrowRequest',
 		icon: 'FormOutlined',
 	},
+	{
+		path: '/admin/users',
+		name: 'Quản lý người dùng',
+		component: './Admin/User',
+		icon: 'TeamOutlined',
+	},
 	// User routes
 	{
 		path: '/user/dashboard',
@@ -97,4 +103,11 @@
 		component: './user/LichSuMuon',
 		icon: 'HistoryOutlined',
 	},
+	{
+		path: '/user/profile',
+		name: 'Trang cá nhân',
+		component: './user/Profile',
+		icon: 'UserOutlined',
+	},
+	
 ];
