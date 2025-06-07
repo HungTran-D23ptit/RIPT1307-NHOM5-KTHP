@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { message } from 'antd';
 import { history } from 'umi';
-import { loginAdmin } from '@/services/Admin/Auth/adminApi';
+import { loginAdmin } from '@/services/Admin/Auth';
 
 export default () => {
 	const [loading, setLoading] = useState<boolean>(false);

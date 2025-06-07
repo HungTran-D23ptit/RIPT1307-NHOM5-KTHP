@@ -1,5 +1,5 @@
 import Footer from '@/components/Footer';
-import RightContent from '@/components/RightContent';
+import Navbar from '@/components/Navbar';
 import { notification } from 'antd';
 import 'moment/locale/vi';
 import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
@@ -15,6 +15,10 @@ import NotAccessible from './pages/exception/403';
 import NotFoundContent from './pages/exception/404';
 import type { IInitialState } from './services/base/typing';
 import './styles/global.less';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
+// Thêm clientId Google của bạn vào đây
+const googleClientId = '306704646002-0cjbqkv9g9aihgnkgm826hivphfk80g8.apps.googleusercontent.com';
 
 /**  loading */
 export const initialStateConfig = {
@@ -150,7 +154,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 			</OIDCBounder>
 		),
 		noFound: <NotFoundContent />,
-		rightContentRender: () => <RightContent />,
+		rightContentRender: () => <Navbar />,
 		disableContentMargin: false,
 
 		footerRender: () => <Footer />,
@@ -216,15 +220,15 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 			</a>
 		),
 
-		childrenRender: (dom) => (
-			<OIDCBounder>
-				<ErrorBoundary>
-					{/* <TechnicalSupportBounder> */}
-					<OneSignalBounder>{dom}</OneSignalBounder>
-					{/* </TechnicalSupportBounder> */}
-				</ErrorBoundary>
-			</OIDCBounder>
-		),
+		 childrenRender: (dom) => (
+      <GoogleOAuthProvider clientId={googleClientId}>
+        <OIDCBounder>
+          <ErrorBoundary>
+            <OneSignalBounder>{dom}</OneSignalBounder>
+          </ErrorBoundary>
+        </OIDCBounder>
+      </GoogleOAuthProvider>
+    ),
 		menuHeaderRender: undefined,
 		...initialState?.settings,
 	};

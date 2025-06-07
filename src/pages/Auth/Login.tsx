@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { Card, Input, Button, Typography } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { history } from 'umi';
-import { Tabs } from 'antd';
-import useUserLoginModel from '@/models/User/userLogin';
 import useAdminLoginModel from '@/models/Admin/adminLogin';
+import useUserLoginModel from '@/models/User/userLogin';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
+import { Button, Card, Divider, Input, Tabs, Typography } from 'antd';
+import { useState } from 'react';
+import { history } from 'umi';
 
 import './Login.less';
 
@@ -13,7 +13,7 @@ const { TabPane } = Tabs;
 
 export default function LoginPage() {
 	const [activeTab, setActiveTab] = useState('user');
-	const { loading: userLoading, handleLogin: handleUserLogin } = useUserLoginModel();
+	const { loading: userLoading, handleLogin: handleUserLogin, handleGoogleLogin } = useUserLoginModel();
 	const { loading: adminLoading, handleLogin: handleAdminLogin } = useAdminLoginModel();
 
 	const handleLogin = async (e: React.FormEvent) => {
@@ -28,6 +28,16 @@ export default function LoginPage() {
 		} else {
 			await handleUserLogin(email, password);
 		}
+	};
+
+	const onGoogleLoginSuccess = async (credentialResponse: CredentialResponse) => {
+		if (credentialResponse.credential) {
+			await handleGoogleLogin(credentialResponse.credential);
+		}
+	};
+
+	const onGoogleLoginError = () => {
+		// Bạn có thể thêm thông báo lỗi nếu muốn
 	};
 
 	return (
@@ -54,7 +64,11 @@ export default function LoginPage() {
 						<div className='input-group'>
 							<Text className='input-label'>Mật khẩu</Text>
 							<Input.Password prefix={<LockOutlined />} name='password' required />
+							<div className='forgot-password-link'>
+								<a onClick={() => history.push('/auth/forgot-password')}>Quên mật khẩu?</a>
+							</div>
 						</div>
+
 						<Button
 							type='primary'
 							htmlType='submit'
@@ -64,6 +78,13 @@ export default function LoginPage() {
 							{(activeTab === 'admin' ? adminLoading : userLoading) ? 'Đang đăng nhập...' : 'Đăng nhập'}
 						</Button>
 					</form>
+
+					{activeTab === 'user' && (
+						<>
+							<Divider>Hoặc đăng nhập bằng</Divider>
+							<GoogleLogin onSuccess={onGoogleLoginSuccess} onError={onGoogleLoginError} useOneTap />
+						</>
+					)}
 
 					<div className='register-link'>
 						<Text type='secondary'>

@@ -25,6 +25,18 @@
 				component: './Auth/Register',
 			},
 			{
+				path: '/auth/change-password',
+				layout: false,
+				name: 'change-password',
+				component: './Auth/ChangePasswordPage',
+			},
+			{
+				path: '/auth/forgot-password',
+				layout: false,
+				name: 'forgot-password',
+				component: './Auth/ForgotResetPassword',
+			},
+			{
 				path: '/auth',
 				redirect: '/auth/login',
 			},
