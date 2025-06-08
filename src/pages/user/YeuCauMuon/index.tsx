@@ -17,21 +17,48 @@ const YeuCauMuon: React.FC = () => {
     const [currentTab, setCurrentTab] = useState('PENDING');
     const [searchText, setSearchText] = useState('');
 
+
     const fetchRequests = async (status = currentTab) => {
         setLoading(true);
         try {
-            const response = await getBorrowRequests({
-                status,
-                page: 1,
-                per_page: 10,
-            });
-            setRequests(response.data.requests || []);
+            if (status === 'APPROVED') {
+                const [approvedResponse, returningResponse, returnedResponse] = await Promise.all([
+                    getBorrowRequests({
+                        status: 'APPROVED',
+                        page: 1,
+                        per_page: 10,
+                    }),
+                    getBorrowRequests({
+                        status: 'RETURNING',
+                        page: 1,
+                        per_page: 10,
+                    }),
+                    getBorrowRequests({
+                        status: 'RETURNED',
+                        page: 1,
+                        per_page: 10,
+                    })
+                ]);
+                setRequests([
+                    ...approvedResponse.data.requests,
+                    ...returningResponse.data.requests,
+                    ...returnedResponse.data.requests
+                ]);
+            } else {
+                const response = await getBorrowRequests({
+                    status,
+                    page: 1,
+                    per_page: 10,
+                });
+                setRequests(response.data.requests || []);
+            }
         } catch (error) {
             setRequests([]);
         } finally {
             setLoading(false);
         }
     };
+
 
     useEffect(() => {
         fetchRequests();
@@ -57,8 +84,11 @@ const YeuCauMuon: React.FC = () => {
     };
 
     const handleRequestUpdate = () => {
-        fetchRequests(); 
+        fetchRequests(currentTab);
     };
+
+
+    
 
     if (showDetailPage && selectedRequest) {
         return <RequestDetail requestId={selectedRequest._id} onBack={handleBack} />;
