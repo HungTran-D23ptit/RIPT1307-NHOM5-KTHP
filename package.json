@@ -57,6 +57,7 @@
     "@ant-design/pro-components": "^2.8.7",
     "@ant-design/pro-layout": "~6.15.3",
     "@monaco-editor/react": "^4.6.0",
+    "@react-oauth/google": "^0.12.2",
     "@sentry/react": "^7.65.0",
     "@tinymce/tinymce-react": "^4.2.0",
     "@types/lodash.debounce": "^4.0.6",
