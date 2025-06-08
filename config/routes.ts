@@ -43,12 +43,12 @@
 		],
 	},
 	// Common routes (visible to both admin and user)
-	{
-		path: '/dashboard',
-		name: 'Dashboard',
-		component: './TrangChu',
-		icon: 'HomeOutlined',
-	},
+	// {
+	// 	path: '/dashboard',
+	// 	name: 'Dashboard',
+	// 	component: './TrangChu',
+	// 	icon: 'HomeOutlined',
+	// },
 	// Admin routes
 	{
 		path: '/admin/devices',

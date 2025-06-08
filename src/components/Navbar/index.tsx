@@ -30,7 +30,7 @@ const Navbar: React.FC = () => {
 
   const handleMenuClick = ({ key }: { key: string }) => {
     if (key === 'logout') handleLogout();
-    if (key === 'profile') history.push('/profile');
+    if (key === 'profile') history.push('/user/profile');
     if (key === 'setting') history.push('/auth/change-password');
   };
 
