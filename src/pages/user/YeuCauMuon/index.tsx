@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Card, Tabs, Row, Col, Space, Input, message, Spin } from 'antd';
+import { Card, Tabs, Row, Col, Space, Input, Spin } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import RequestCard from './components/RequestCard';
 import RequestDetail from './components/RequestDetail';
@@ -25,16 +25,7 @@ const YeuCauMuon: React.FC = () => {
                 page: 1,
                 per_page: 10,
             });
-            if (status === 'APPROVED') {
-                const returningResponse = await getBorrowRequests({
-                    status: 'RETURNING',
-                    page: 1,
-                    per_page: 10,
-                });
-                setRequests([...response.data.requests, ...returningResponse.data.requests]);
-            } else {
-                setRequests(response.data.requests || []);
-            }
+            setRequests(response.data.requests || []);
         } catch (error) {
             setRequests([]);
         } finally {
@@ -66,8 +57,7 @@ const YeuCauMuon: React.FC = () => {
     };
 
     const handleRequestUpdate = () => {
-        fetchRequests('PENDING');
-        fetchRequests('REJECTED');
+        fetchRequests(); 
     };
 
     if (showDetailPage && selectedRequest) {
