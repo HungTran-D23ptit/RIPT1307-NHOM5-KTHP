@@ -3,6 +3,7 @@ import { Tabs } from 'antd';
 import PendingRequests from './components/PendingRequests';
 import ApprovedRequests from './components/ApprovedRequests';
 import RejectedRequests from './components/RejectedRequests';
+import ReturningRequests from './components/ReturningRequests';
 import './/index.less';
 
 const { TabPane } = Tabs;
@@ -20,6 +21,9 @@ const BorrowRequestManagement: React.FC = () => {
         </TabPane>
         <TabPane tab="Đã từ chối" key="rejected">
           <RejectedRequests />
+        </TabPane>
+        <TabPane tab="Đang trả" key="returning">
+          <ReturningRequests />
         </TabPane>
       </Tabs>
     </div>

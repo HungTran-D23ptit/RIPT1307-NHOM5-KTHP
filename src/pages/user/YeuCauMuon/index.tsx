@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Card, Tabs, Row, Col, Space, Input, message, Spin } from 'antd';
+import { Card, Tabs, Row, Col, Space, Input, Spin } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import RequestCard from './components/RequestCard';
 import RequestDetail from './components/RequestDetail';
@@ -17,20 +17,40 @@ const YeuCauMuon: React.FC = () => {
     const [currentTab, setCurrentTab] = useState('PENDING');
     const [searchText, setSearchText] = useState('');
 
+
     const fetchRequests = async (status = currentTab) => {
         setLoading(true);
         try {
-            const response = await getBorrowRequests({
-                status,
-                page: 1,
-                per_page: 10,
-            });
             if (status === 'APPROVED') {
-                const returningResponse = await getBorrowRequests({
-                    status: 'RETURNING',
+                const [approvedResponse, returningResponse, returnedResponse] = await Promise.all([
+                    getBorrowRequests({
+                        status: 'APPROVED',
+                        page: 1,
+                        per_page: 10,
+                    }),
+                    getBorrowRequests({
+                        status: 'RETURNING',
+                        page: 1,
+                        per_page: 10,
+                    }),
+                    getBorrowRequests({
+                        status: 'RETURNED',
+                        page: 1,
+                        per_page: 10,
+                    })
+                ]);
+                setRequests([
+                    ...approvedResponse.data.requests,
+                    ...returningResponse.data.requests,
+                    ...returnedResponse.data.requests
+                ]);
+            } else {
+                const response = await getBorrowRequests({
+                    status,
                     page: 1,
                     per_page: 10,
                 });
+
                 const overdueResponse = await getBorrowRequests({
                     status: 'OVERDUE',
                     page: 1,
@@ -46,6 +66,7 @@ const YeuCauMuon: React.FC = () => {
             setLoading(false);
         }
     };
+
 
     useEffect(() => {
         fetchRequests();
@@ -71,9 +92,11 @@ const YeuCauMuon: React.FC = () => {
     };
 
     const handleRequestUpdate = () => {
-        fetchRequests('PENDING');
-        fetchRequests('REJECTED');
+        fetchRequests(currentTab);
     };
+
+
+    
 
     if (showDetailPage && selectedRequest) {
         return <RequestDetail requestId={selectedRequest._id} onBack={handleBack} />;
