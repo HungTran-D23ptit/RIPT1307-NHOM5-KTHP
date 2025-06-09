@@ -7,7 +7,6 @@ export const useEditDevice = (initialData: DeviceResponse, onSuccess: () => void
 	const [loading, setLoading] = useState(false);
 	const [deviceTypes, setDeviceTypes] = useState<DeviceType[]>([]);
 
-	// ✅ Đặt function declaration lên trước
 	async function fetchDeviceTypes() {
 		try {
 			const response = await getDeviceTypes();
@@ -43,15 +42,20 @@ export const useEditDevice = (initialData: DeviceResponse, onSuccess: () => void
 				return false;
 			}
 
+			// ⚠️ Tạo updateData và chỉ gửi code nếu người dùng đã sửa
 			const updateData: any = {
 				status: values.status,
 				type: values.type,
 				name: values.name,
-				code: values.code,
 				description: values.description,
 				quantity: values.quantity,
 			};
 
+			if (values.code !== initialData.code) {
+				updateData.code = values.code;
+			}
+
+			// Xử lý hình ảnh
 			if (fileList[0]?.originFileObj) {
 				const file = fileList[0].originFileObj;
 				const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg';
@@ -64,21 +68,22 @@ export const useEditDevice = (initialData: DeviceResponse, onSuccess: () => void
 				updateData.image = 'remove';
 			}
 
-			console.log('Sending update data:', updateData); // Debug log
+			console.log('Sending update data:', updateData);
 			await updateDevice(initialData._id, updateData);
 			message.success('Cập nhật thiết bị thành công');
 			onSuccess();
 			return true;
 		} catch (error: any) {
-			console.error('Update error:', error); // Debug log
+			console.error('Update error:', error);
 			if (error.response?.data?.detail) {
 				const errors = error.response.data.detail;
 				Object.entries(errors).forEach(([field, msg]: [string, any]) => {
 					const vietnameseMessages: { [key: string]: string } = {
 						'Ảnh thiết bị does not match any of the allowed types':
-							'Định dạng ảnh không hợp lệ. Vui lòng sử dụng file ảnh (jpg, png, jpeg)',
+						'Định dạng ảnh không hợp lệ. Vui lòng sử dụng file ảnh (jpg, png, jpeg)',
 						'Trạng thái không hợp lệ.': 'Trạng thái thiết bị không hợp lệ. Vui lòng chọn trạng thái khác.',
 						'Loại thiết bị không hợp lệ.': 'Loại thiết bị không hợp lệ. Vui lòng chọn loại khác.',
+						'Mã thiết bị đã tồn tại.': 'Mã thiết bị đã tồn tại. Vui lòng chọn mã khác.',
 					};
 					message.error(vietnameseMessages[msg] || msg);
 				});

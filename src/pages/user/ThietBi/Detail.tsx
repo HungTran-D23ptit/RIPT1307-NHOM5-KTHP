@@ -110,7 +110,7 @@ const Detail = () => {
                       className="thiet-bi__detail-review-avatar"
                     />
                     <div>
-                      <b>{review.user?.full_name || 'Người dùng'}</b>
+                      <b>{review.user?.name || 'Người dùng'}</b>
                       <div className="thiet-bi__detail-review-stars">
                         <Rate disabled value={review.rating} character={<StarFilled style={{ color: '#faad14' }} />} />
                         <span style={{ marginLeft: 6, color: '#faad14' }}>{review.rating}</span>
