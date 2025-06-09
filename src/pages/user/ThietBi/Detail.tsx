@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, history } from 'umi';
-import { Card, Button, Tag, Spin, Rate, Empty, Tooltip } from 'antd';
+import { Card, Button, Tag, Spin, Rate, Empty, Tooltip, Modal } from 'antd';
 import { getDeviceById } from '@/services/User/Device';
-import { StarFilled, ArrowLeftOutlined } from '@ant-design/icons';
+import { StarFilled, ArrowLeftOutlined, ZoomInOutlined } from '@ant-design/icons';
 import './Detail.less';
 
 const statusMap = {
@@ -14,6 +14,7 @@ const Detail = () => {
   const { id } = useParams<{ id: string }>();
   const [loading, setLoading] = useState(true);
   const [device, setDevice] = useState<any>(null);
+  const [isImageModalVisible, setIsImageModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -49,12 +50,16 @@ const Detail = () => {
         style={{ maxWidth: 950, margin: '0 auto', borderRadius: 18, boxShadow: '0 4px 32px 0 rgba(0,0,0,0.10)' }}
       >
         <div className="thiet-bi__detail-flexbox">
-          <div className="thiet-bi__detail-img-wrap">
+          <div className="thiet-bi__detail-img-wrap" onClick={() => setIsImageModalVisible(true)}>
             <img
               src={device.image_url || 'https://via.placeholder.com/400x260?text=No+Image'}
               alt={device.name}
               className="thiet-bi__detail-img"
             />
+            <div className="thiet-bi__detail-img-overlay">
+              <ZoomInOutlined className="zoom-icon" />
+              <span>Click để xem ảnh lớn</span>
+            </div>
           </div>
           <div className="thiet-bi__detail-info">
             <h2 className="thiet-bi__detail-title">{device.name}</h2>
@@ -124,6 +129,21 @@ const Detail = () => {
           )}
         </div>
       </Card>
+
+      <Modal
+        open={isImageModalVisible}
+        onCancel={() => setIsImageModalVisible(false)}
+        footer={null}
+        width="80%"
+        centered
+        className="image-modal"
+      >
+        <img
+          src={device.image_url || 'https://via.placeholder.com/400x260?text=No+Image'}
+          alt={device.name}
+          style={{ width: '100%', height: 'auto', maxHeight: '80vh', objectFit: 'contain' }}
+        />
+      </Modal>
     </div>
   );
 };

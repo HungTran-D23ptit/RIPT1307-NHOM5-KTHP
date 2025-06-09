@@ -28,13 +28,16 @@
     border: 1.5px solid #e53935;
     border-radius: 4px;
     outline: none;
-    width: 220px;
+    width: 500px;
+    flex: 1;
+    max-width: 600px;
   }
 
   &__select {
     padding: 8px 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    min-width: 200px;
   }
 
   &__grid {
@@ -53,8 +56,16 @@
 
     &-image {
       width: 100%;
-      height: 160px;
-      object-fit: cover;
+      height: 250px;
+      object-fit: contain;
+      // background-color: #f5f5f5;
+      padding: 5px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.02);
+      }
     }
 
     &-body {
