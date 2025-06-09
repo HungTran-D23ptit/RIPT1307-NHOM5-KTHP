@@ -52,6 +52,15 @@ const BorrowedDevices: React.FC<BorrowedDevicesProps> = ({
 
 	const columns = [
 		{
+			title: 'Mã yêu cầu',
+			dataIndex: '_id',
+			key: '_id',
+			width: 200,
+			render: (text: string) => (
+			  <Tag color="purple">{text}</Tag>
+			),
+		  },
+		{
 			title: 'Thiết bị',
 			dataIndex: ['device', 'name'],
 			key: 'device',
