@@ -22,7 +22,7 @@ const YeuCauMuon: React.FC = () => {
         setLoading(true);
         try {
             if (status === 'APPROVED') {
-                const [approvedResponse, returningResponse, returnedResponse] = await Promise.all([
+                const [approvedResponse, returningResponse, overdueResponse] = await Promise.all([
                     getBorrowRequests({
                         status: 'APPROVED',
                         page: 1,
@@ -34,7 +34,7 @@ const YeuCauMuon: React.FC = () => {
                         per_page: 10,
                     }),
                     getBorrowRequests({
-                        status: 'RETURNED',
+                        status: 'OVERDUE',
                         page: 1,
                         per_page: 10,
                     })
@@ -42,7 +42,7 @@ const YeuCauMuon: React.FC = () => {
                 setRequests([
                     ...approvedResponse.data.requests,
                     ...returningResponse.data.requests,
-                    ...returnedResponse.data.requests
+                    ...overdueResponse.data.requests
                 ]);
             } else {
                 const response = await getBorrowRequests({
