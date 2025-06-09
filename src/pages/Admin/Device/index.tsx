@@ -31,9 +31,9 @@ const DeviceManagement: React.FC = () => {
 			try {
 				const response = await rootAPI.get('/admin/device/types');
 				if (response.data && response.data.types) {
-					const types = response.data.types.map((type: string) => ({
-						label: type === 'Other' ? 'Khác' : type,
-						value: type,
+					const types = response.data.types.map((item: { type: string }) => ({
+						label: item.type === 'Other' ? 'Khác' : item.type,
+						value: item.type.toLowerCase().replace(/\s+/g, ''),
 					}));
 					setDeviceTypes([{ label: 'Tất cả', value: 'all' }, ...types]);
 				}

@@ -52,7 +52,7 @@ const EquipmentRecommendations = () => {
           </h2>
         </Col>
         <Col>
-          <Button type="link" onClick={() => history.push('user/devices')}>Xem tất cả</Button>
+          <Button type="link" onClick={() => history.push('devices')}>Xem tất cả</Button>
         </Col>
       </Row>
       <Row gutter={[16, 16]}>
