@@ -92,6 +92,7 @@ const DeviceManagement: React.FC = () => {
 
 	return (
 		<Card>
+			<h1>Quản lý thiết bị</h1>
 			<Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
 				<Col span={24} style={{ textAlign: 'right' }}>
 					<Button type='primary' icon={<PlusOutlined />} onClick={() => setIsModalVisible(true)}>
@@ -114,7 +115,7 @@ const DeviceManagement: React.FC = () => {
 						onChange={(value) => setDeviceType(value)}
 					/>
 				</Col>
-				<Col span={4}>
+				{/* <Col span={4}>
 					<Select
 						style={{ width: '100%' }}
 						placeholder='Chọn trạng thái'
@@ -122,7 +123,7 @@ const DeviceManagement: React.FC = () => {
 						value={deviceStatus}
 						onChange={(value) => setDeviceStatus(value)}
 					/>
-				</Col>
+				</Col> */}
 			</Row>
 
 			<Tabs activeKey={activeTabKey} onChange={(key) => setActiveTabKey(key)} items={items} />
