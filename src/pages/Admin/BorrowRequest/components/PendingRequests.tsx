@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Table, Tag, Button, message, Modal, Input } from 'antd';
 import { getBorrowRequests, approveBorrowRequest, rejectBorrowRequest } from '@/services/Admin/borrowRequest';
 import moment from 'moment';
+import AdminRequestDetail from './AdminRequestDetail';
 
 interface PendingRequest {
   _id: string;
@@ -25,6 +26,8 @@ const PendingRequests: React.FC = () => {
   const [isRejectModalVisible, setIsRejectModalVisible] = useState(false);
   const [rejectReason, setRejectReason] = useState('');
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [detailRequestId, setDetailRequestId] = useState<string | null>(null);
 
   const fetchData = async (page = 1, pageSize = 10) => {
     setLoading(true);
@@ -101,6 +104,17 @@ const PendingRequests: React.FC = () => {
     setSelectedRequestId(null);
   };
 
+  const handleViewDetail = (id: string) => {
+    setDetailRequestId(id);
+    setShowDetailModal(true);
+  };
+
+  const handleCloseDetailModal = () => {
+    setShowDetailModal(false);
+    setDetailRequestId(null);
+    fetchData(pagination.current, pagination.pageSize);
+  };
+
   const columns = [
     {
       title: 'Mã yêu cầu',
@@ -146,6 +160,7 @@ const PendingRequests: React.FC = () => {
       key: 'action',
       render: (text: any, record: PendingRequest) => (
         <span>
+          <Button style={{ marginRight: 8 }} onClick={() => handleViewDetail(record._id)}>Chi tiết</Button>
           <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleApprove(record._id)}>Duyệt</Button>
           <Button danger onClick={() => handleReject(record._id)}>Từ chối</Button>
         </span>
@@ -180,6 +195,18 @@ const PendingRequests: React.FC = () => {
           placeholder="Nhập lý do từ chối..."
         />
       </Modal>
+      {showDetailModal && detailRequestId && (
+        <Modal
+          title="Chi tiết yêu cầu mượn"
+          visible={showDetailModal}
+          onCancel={handleCloseDetailModal}
+          footer={null}
+          width={900}
+          centered
+        >
+          <AdminRequestDetail requestId={detailRequestId} onBack={handleCloseDetailModal} />
+        </Modal>
+      )}
     </>
   );
 };

@@ -77,4 +77,16 @@ export async function rejectBorrowRequest(id: string, note: string) {
     method: 'PATCH',
     data: { note },
   });
+}
+
+export async function getBorrowRequestDetail(id: string) {
+  return request(`/admin/borrow-requests/${id}`, {
+    method: 'GET',
+  });
+}
+
+export async function confirmReturnDevice(id: string) {
+  return request(`/admin/borrow-requests/${id}/confirm-return`, {
+    method: 'PATCH',
+  });
 } 
