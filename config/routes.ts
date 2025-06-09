@@ -26,7 +26,7 @@
 			},
 			{
 				path: '/auth/change-password',
-				layout: false,
+				layout: true,
 				name: 'change-password',
 				component: './Auth/ChangePasswordPage',
 			},
