@@ -57,6 +57,11 @@
 		icon: 'LaptopOutlined',
 	},
 	{
+		path: '/admin/devices/:id',
+		component: './Admin/Device/Detail',
+		layout: true,
+	},
+	{
 		path: '/admin/borrow-requests',
 		name: 'Quản lý yêu cầu mượn',
 		component: './Admin/BorrowRequest',
@@ -66,6 +71,12 @@
 		path: '/admin/users',
 		name: 'Quản lý người dùng',
 		component: './Admin/User',
+		icon: 'TeamOutlined',
+	},
+	{
+		path: '/admin/statistic',
+		name: 'Thống kê',
+		component: './Admin/statistic',
 		icon: 'TeamOutlined',
 	},
 	// User routes
