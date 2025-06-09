@@ -12,22 +12,54 @@ const ThietBi = () => {
   const [status, setStatus] = useState('');
   const [devices, setDevices] = useState<DeviceResponse[]>([]);
 
+  const deviceTypes = [
+    { value: '', label: 'Tất cả thiết bị' },
+    { value: 'Camera Recorder', label: 'Máy quay' },
+    { value: 'Camera', label: 'Máy ảnh' },
+    { value: 'Microphone', label: 'Micro' },
+    { value: 'LED Studio Light', label: 'Đèn LED' },
+    { value: 'Computer', label: 'Máy tính' },
+    { value: 'Projector', label: 'Máy chiếu' },
+    { value: 'Other', label: 'Khác' }
+  ];
+
   useEffect(() => {
     const fetchDevices = async () => {
       try {
-        const response = await getDevices({
-          search,
-          type: type || undefined,
-          status: status || undefined,
-        });
-        setDevices(response.data.data);
+        const params: any = {};
+        if (search) params.search = search;
+        if (type) params.type = type;
+        if (status) params.status = status;
+        
+        console.log('Filter params:', params);
+        const response = await getDevices(params);
+        console.log('API response:', response);
+        console.log('Devices data:', response.data.data);
+        
+        // Filter devices based on type and status
+        let filteredDevices = response.data.data;
+        if (type) {
+          filteredDevices = filteredDevices.filter(d => d.type === type);
+        }
+        if (status) {
+          filteredDevices = filteredDevices.filter(d => d.status === status);
+        }
+        
+        console.log('Filtered devices:', filteredDevices);
+        setDevices(filteredDevices);
       } catch (error) {
+        console.error('Error fetching devices:', error);
         message.error('Không thể tải danh sách thiết bị');
       }
     };
 
     fetchDevices();
   }, [search, type, status]);
+
+  // Add debug log for devices state
+  useEffect(() => {
+    console.log('Current devices state:', devices);
+  }, [devices]);
 
   const getStatusInfo = (device: DeviceResponse) => {
     if (device.status === 'NORMAL' && device.quantity > 1) {
@@ -57,6 +89,11 @@ const ThietBi = () => {
     }
   };
 
+  const getDeviceTypeLabel = (type: string) => {
+    const found = deviceTypes.find(t => t.value === type);
+    return found ? found.label : type;
+  };
+
   return (
     <div className="thiet-bi__container">
       <h1 className="thiet-bi__title">Danh sách thiết bị</h1>
@@ -69,14 +106,11 @@ const ThietBi = () => {
           onChange={e => setSearch(e.target.value)}
         />
         <select className="thiet-bi__select" value={type} onChange={e => setType(e.target.value)}>
-          <option value="">Tất cả thiết bị</option>
-          <option value="Camera Recorder">Máy quay</option>
-          <option value="Camera">Máy ảnh</option>
-          <option value="Microphone">Micro</option>
-          <option value="LED Studio Light">Đèn LED</option>
-          <option value="Computer">Máy tính</option>
-          <option value="Projector">Máy chiếu</option>
-          <option value="Other">Khác</option>
+          {deviceTypes.map(option => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
         </select>
         <select className="thiet-bi__select" value={status} onChange={e => setStatus(e.target.value)}>
           <option value="">Tất cả tình trạng</option>
@@ -103,7 +137,7 @@ const ThietBi = () => {
                 </div>
                 <div className="thiet-bi__card-desc">{device.description}</div>
                 <div className="thiet-bi__card-info">
-                  <span className="thiet-bi__card-info-label">Loại:</span> {device.type}
+                  <span className="thiet-bi__card-info-label">Loại:</span> {getDeviceTypeLabel(device.type)}
                   <span className="thiet-bi__card-info-label">Số lượng:</span> {device.quantity} sẵn có
                 </div>
               </div>
@@ -129,3 +163,4 @@ const ThietBi = () => {
 }
 
 export default ThietBi;
+
