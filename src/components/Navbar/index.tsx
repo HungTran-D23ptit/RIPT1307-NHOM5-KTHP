@@ -2,7 +2,7 @@ import React from 'react';
 import { BellOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Badge, Dropdown, Menu, message } from 'antd';
 import { useHistory } from 'umi';
-import NotificationDropdown from './NotificationDropdown';
+// import NotificationDropdown from '@/components/RightContent/NoticeIcon';
 import './index.less';
 import { logoutAdmin } from '@/services/Admin/Auth';
 import { logoutUser } from '@/services/User/Auth';
@@ -46,7 +46,7 @@ const Navbar: React.FC = () => {
   return (
     <div className="navbar">
       <div className="navbar-right">
-        <NotificationDropdown />
+        {/* <NotificationDropdown /> */}
         <Dropdown overlay={menu} placement="bottomRight">
           <Avatar icon={<UserOutlined />} className="navbar-avatar" />
         </Dropdown>
