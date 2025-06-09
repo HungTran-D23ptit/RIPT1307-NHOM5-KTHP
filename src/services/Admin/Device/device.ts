@@ -77,7 +77,7 @@ export async function deleteDevice(id: string) {
 }
 
 export async function getDeviceTypes() {
-	return rootAPI.get('/admin/device/types');
+  return await rootAPI.get<{ types: { type: string; count: number }[] }>('/admin/device/types');
 }
 
 export type {

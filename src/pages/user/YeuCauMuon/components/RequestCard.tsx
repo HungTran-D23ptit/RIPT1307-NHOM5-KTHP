@@ -121,7 +121,7 @@ const RequestCard = ({ item, onViewDetail, onRequestUpdate }: RequestCardProps) 
                                 Hủy yêu cầu
                             </Button>
                         )}
-                        {(item.status === 'APPROVED' || item.status === 'RETURNING') && (
+                        {(item.status === 'APPROVED' || item.status === 'RETURNING' || item.status === 'OVERDUE') && (
                             <Button
                                 block
                                 onClick={handleReturnDevice}

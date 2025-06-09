@@ -51,6 +51,12 @@
 	// },
 	// Admin routes
 	{
+		path: '/admin/dashboard',
+		name: 'Trang chủ',
+		component: './Admin/TrangChuAdmin',
+		icon: 'HomeOutlined',
+	},
+	{
 		path: '/admin/devices',
 		name: 'Quản lý thiết bị',
 		component: './Admin/Device',

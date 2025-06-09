@@ -18,7 +18,7 @@ import './styles/global.less';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 // Thêm clientId Google của bạn vào đây
-const googleClientId = '355148379460-oa19ft8ruegto04pill9f7kl49dd6t86.apps.googleusercontent.com';
+const googleClientId = '306704646002-0cjbqkv9g9aihgnkgm826hivphfk80g8.apps.googleusercontent.com';
 
 /**  loading */
 export const initialStateConfig = {

@@ -10,15 +10,18 @@ export const useEditDevice = (initialData: DeviceResponse, onSuccess: () => void
 	async function fetchDeviceTypes() {
 		try {
 			const response = await getDeviceTypes();
+			console.log('API response:', response);
+
 			if (response.data && response.data.types) {
-				const types = response.data.types.map((type: string) => ({
-					label: type === 'Other' ? 'Khác' : type,
-					value: type,
+				const types = response.data.types.map((item: { type: string }) => ({
+					label: item.type === 'Other' ? 'Khác' : item.type,
+					value: item.type,
 				}));
 				setDeviceTypes(types);
 			}
-		} catch (error) {
-			message.error('Không thể tải danh sách loại thiết bị');
+		} catch (error: any) {
+			console.error('Lỗi khi tải danh sách loại thiết bị:', error);
+			message.error(`Không thể tải danh sách loại thiết bị: ${error.message || error}`);
 		}
 	}
 
@@ -80,7 +83,7 @@ export const useEditDevice = (initialData: DeviceResponse, onSuccess: () => void
 				Object.entries(errors).forEach(([field, msg]: [string, any]) => {
 					const vietnameseMessages: { [key: string]: string } = {
 						'Ảnh thiết bị does not match any of the allowed types':
-						'Định dạng ảnh không hợp lệ. Vui lòng sử dụng file ảnh (jpg, png, jpeg)',
+							'Định dạng ảnh không hợp lệ. Vui lòng sử dụng file ảnh (jpg, png, jpeg)',
 						'Trạng thái không hợp lệ.': 'Trạng thái thiết bị không hợp lệ. Vui lòng chọn trạng thái khác.',
 						'Loại thiết bị không hợp lệ.': 'Loại thiết bị không hợp lệ. Vui lòng chọn loại khác.',
 						'Mã thiết bị đã tồn tại.': 'Mã thiết bị đã tồn tại. Vui lòng chọn mã khác.',
