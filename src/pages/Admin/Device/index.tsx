@@ -33,7 +33,7 @@ const DeviceManagement: React.FC = () => {
 				if (response.data && response.data.types) {
 					const types = response.data.types.map((type: string) => ({
 						label: type === 'Other' ? 'Khác' : type,
-						value: type.toLowerCase().replace(/\s+/g, ''),
+						value: type,
 					}));
 					setDeviceTypes([{ label: 'Tất cả', value: 'all' }, ...types]);
 				}

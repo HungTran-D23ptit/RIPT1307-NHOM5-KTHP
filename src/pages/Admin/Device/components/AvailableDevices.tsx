@@ -3,6 +3,7 @@ import { AvailableDevicesProps } from '@/services/Admin/Device/device';
 import { Button, Card, Col, Image, Popconfirm, Row, Tag } from 'antd';
 import React, { useState } from 'react';
 import EditDeviceModal from './EditDeviceModal';
+import { history } from 'umi';
 
 const AvailableDevices: React.FC<AvailableDevicesProps> = ({ searchText, deviceType, deviceStatus, onSuccess }) => {
 	const [editModalVisible, setEditModalVisible] = useState(false);
@@ -14,58 +15,65 @@ const AvailableDevices: React.FC<AvailableDevicesProps> = ({ searchText, deviceT
 		onSuccess,
 	);
 
+	const handleViewDetail = (deviceId: string) => {
+		history.push(`/admin/devices/${deviceId}`);
+	};
+
 	return (
 		<>
 			<Row gutter={[16, 16]}>
-				{' '}
 				{devices.map((device) => (
-					<Col span={8} key={device._id}>
-						<Card loading={loading}>
-							<Image
-								src={device.image_url}
-								alt={device.name}
-								style={{ width: '100%', height: 200, objectFit: 'cover' }}
-							/>
-							<h3>{device.name}</h3>
-							<p>Mã thiết bị: {device.code}</p>
-							<p>
-								Loại: {getDeviceTypeLabel(device.type)} ({device.type || 'null'})
-							</p>
-							<p>Mô tả: {device.description || '-'}</p>
-							<p>Số lượng: {device.quantity}</p>
-							<p>
-								Tình trạng: <Tag color={getStatusTag(device.status).color}>{getStatusTag(device.status).text}</Tag>
-							</p>
-							<Row justify='end' gutter={8}>
-								<Col>
-									<Button
-										type='primary'
-										onClick={() => {
-											setSelectedDevice(device);
-											setEditModalVisible(true);
-										}}
-									>
-										Cập nhật
+					<Col key={device._id} xs={24} sm={12} md={8}>
+						<Card
+							hoverable
+							cover={
+								<Image
+									alt={device.name}
+									src={device.image_url || 'https://via.placeholder.com/300x200?text=No+Image'}
+									style={{ height: 200, objectFit: 'cover' }}
+									preview={false}
+								/>
+							}
+							actions={[
+								<Button type="link" onClick={() => handleViewDetail(device._id)}>
+									Chi tiết
+								</Button>,
+								<Button type="link" onClick={() => {
+									setSelectedDevice(device);
+									setEditModalVisible(true);
+								}}>
+									Cập nhật
+								</Button>,
+								<Popconfirm
+									title="Bạn có chắc chắn muốn xóa thiết bị này?"
+									onConfirm={() => handleDelete(device._id)}
+									okText="Xác nhận"
+									cancelText="Hủy"
+								>
+									<Button type="link" danger>
+										Xóa
 									</Button>
-								</Col>
-								<Col>
-									<Popconfirm
-										title='Xác nhận xóa thiết bị'
-										onConfirm={() => handleDelete(device._id)}
-										okText='Có'
-										cancelText='Không'
-									>
-										<Button danger>Xóa</Button>
-									</Popconfirm>
-								</Col>
-							</Row>
+								</Popconfirm>,
+							]}
+						>
+							<Card.Meta
+								title={device.name}
+								description={
+									<>
+										<div>Mã: {device.code}</div>
+										<div>Loại: {getDeviceTypeLabel(device.type)}</div>
+										<div>Trạng thái: {getStatusTag(device.status)}</div>
+										<div>Số lượng: {device.quantity}</div>
+									</>
+								}
+							/>
 						</Card>
 					</Col>
 				))}
-			</Row>{' '}
+			</Row>
+
 			<EditDeviceModal
 				visible={editModalVisible}
-				initialData={selectedDevice}
 				onCancel={() => {
 					setEditModalVisible(false);
 					setSelectedDevice(null);
@@ -75,6 +83,7 @@ const AvailableDevices: React.FC<AvailableDevicesProps> = ({ searchText, deviceT
 					setSelectedDevice(null);
 					if (onSuccess) onSuccess();
 				}}
+				initialData={selectedDevice}
 			/>
 		</>
 	);
