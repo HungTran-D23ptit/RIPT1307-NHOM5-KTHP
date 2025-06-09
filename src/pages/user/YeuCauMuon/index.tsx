@@ -31,7 +31,12 @@ const YeuCauMuon: React.FC = () => {
                     page: 1,
                     per_page: 10,
                 });
-                setRequests([...response.data.requests, ...returningResponse.data.requests]);
+                const overdueResponse = await getBorrowRequests({
+                    status: 'OVERDUE',
+                    page: 1,
+                    per_page: 10,
+                });
+                setRequests([...response.data.requests, ...returningResponse.data.requests, ...overdueResponse.data.requests]);
             } else {
                 setRequests(response.data.requests || []);
             }
