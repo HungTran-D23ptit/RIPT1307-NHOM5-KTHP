@@ -34,13 +34,6 @@ const Navbar: React.FC = () => {
 		if (key === 'setting') history.push('/auth/change-password');
 	};
 
-  const handleMenuClick = ({ key }: { key: string }) => {
-    if (key === 'logout') handleLogout();
-    if (key === 'profile') history.push('/user/profile');
-    if (key === 'setting') history.push('/auth/change-password');
-  };
-
-
 	const menu = (
 		<Menu className='navbar-menu' onClick={handleMenuClick}>
 			<Menu.Item key='setting' icon={<SettingOutlined />}>
