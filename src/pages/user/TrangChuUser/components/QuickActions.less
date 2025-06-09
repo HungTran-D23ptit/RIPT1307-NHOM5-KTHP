@@ -1,0 +1,76 @@
+.quick-actions {
+  margin-bottom: 24px;
+
+  .title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+
+    .icon {
+      color: #ff4d4f;
+      margin-right: 8px;
+    }
+  }
+
+  .action-card {
+    border: 1px solid #d9d9d9;
+    border-radius: 8px;
+    transition: all 0.3s;
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .action-content {
+      text-align: center;
+      padding: 12px;
+
+      .icon-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 8px;
+
+        &.devices {
+          background: #ffe4e6;
+          .icon { color: #ff4d4f; }
+        }
+
+        &.requests {
+          background: #e6f4ff;
+          .icon { color: #1890ff; }
+        }
+
+        &.history {
+          background: #f6ffed;
+          .icon { color: #52c41a; }
+        }
+
+        &.profile {
+          background: #f0e7ff;
+          .icon { color: #722ed1; }
+        }
+
+        .icon {
+          font-size: 24px;
+        }
+      }
+
+      .action-title {
+        font-weight: bold;
+        margin-bottom: 2px;
+      }
+
+      .action-description {
+        color: #666;
+        font-size: 12px;
+      }
+    }
+  }
+} 

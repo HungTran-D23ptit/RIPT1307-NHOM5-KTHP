@@ -7,6 +7,7 @@ import { CurrentBorrowing } from '@/services/User/Home/typing';
 import RequestCard from '@/pages/user/YeuCauMuon/components/RequestCard';
 import RequestDetail from '@/pages/user/YeuCauMuon/components/RequestDetail';
 import type { BorrowRequest } from '@/services/User/AllRequest/FEtyping';
+import './CurrentBorrowings.less';
 
 const CurrentBorrowings = () => {
   const history = useHistory();
@@ -61,11 +62,11 @@ const CurrentBorrowings = () => {
   }
 
   return (
-    <div style={{ marginBottom: '24px' }}>
-      <Row justify="space-between" style={{ marginBottom: '16px' }}>
+    <div className="current-borrowings">
+      <Row justify="space-between" className="header">
         <Col>
-          <h2 style={{ fontSize: '18px', fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
-            <ShoppingCartOutlined style={{ color: '#ff4d4f', marginRight: '8px' }} />
+          <h2 className="title">
+            <ShoppingCartOutlined className="icon" />
             Thiết bị đang mượn
           </h2>
         </Col>
@@ -73,9 +74,9 @@ const CurrentBorrowings = () => {
           <Button type="link" onClick={handleViewAll}>Xem tất cả</Button>
         </Col>
       </Row>
-      <Row gutter={[16, 16]}>
+      <Row gutter={[16, 16]} className="borrowings-grid">
         {borrowings.map((borrowing) => (
-          <Col xs={24} lg={12} key={borrowing._id}>
+          <Col xs={24} lg={12} key={borrowing._id} className="borrowing-item">
             <RequestCard 
               item={borrowing}
               onViewDetail={handleViewDetail}

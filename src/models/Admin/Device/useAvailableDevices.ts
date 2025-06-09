@@ -1,6 +1,11 @@
 import { deleteDevice, DeviceResponse, getDevices, updateDevice } from '@/services/Admin/Device/device';
-import { message } from 'antd';
+import { message, Tag } from 'antd';
 import { useEffect, useState } from 'react';
+import React from 'react';
+
+const renderStatusTag = (color: string, text: string) => {
+	return React.createElement(Tag, { color, style: { margin: 0 } }, text);
+};
 
 export const useAvailableDevices = (
 	searchText: string,
@@ -71,26 +76,19 @@ export const useAvailableDevices = (
 	};
 
 	const getStatusTag = (status: string) => {
-		const statusMap = {
-			NORMAL: {
-				color: 'green',
-				text: 'Có sẵn',
-			},
-			MAINTENANCE: {
-				color: 'purple',
-				text: 'Đang bảo trì',
-			},
+		const statusConfig = {
+			NORMAL: { color: '#52c41a', text: 'Sẵn sàng để mượn' },
+			MAINTENANCE: { color: '#faad14', text: 'Đang bảo trì' },
 		};
-		return (
-			statusMap[status as keyof typeof statusMap] || {
-				color: 'default',
-				text: status,
-			}
-		);
+
+		const config = statusConfig[status as keyof typeof statusConfig];
+		if (!config) return null;
+
+		return renderStatusTag(config.color, config.text);
 	};
 
 	const getDeviceTypeLabel = (type: string | null) => {
-		if (!type) return 'Không xác định';
+		if (!type) return 'Chưa phân loại';
 		const types = {
 			computer: 'Máy tính',
 			monitor: 'Màn hình',

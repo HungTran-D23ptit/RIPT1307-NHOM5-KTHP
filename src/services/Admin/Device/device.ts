@@ -20,6 +20,10 @@ export async function getDevices(params: {
 	return rootAPI.get('/admin/device', { params });
 }
 
+export async function getDeviceById(id: string) {
+	return rootAPI.get(`/admin/device/${id}`);
+}
+
 export async function createDevice(data: FormData) {
 	return rootAPI.post('/admin/device', data);
 }

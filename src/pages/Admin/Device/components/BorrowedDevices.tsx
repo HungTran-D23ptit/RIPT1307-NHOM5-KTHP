@@ -127,4 +127,3 @@ const BorrowedDevices: React.FC<BorrowedDevicesProps> = ({
 };
 
 export default BorrowedDevices;
-

@@ -5,6 +5,7 @@ import HomeService from '@/services/User/Home/HomeService';
 import { RecommendedDevice } from '@/services/User/Home/typing';
 import { useHistory } from 'react-router-dom';
 import { API_URL } from '../../../../config/config';
+import './EquipmentRecommendations.less';
 
 const { Meta } = Card;
 
@@ -36,20 +37,17 @@ const EquipmentRecommendations = () => {
     return Array.from({ length: 5 }, (_, i) => (
       <StarOutlined 
         key={i} 
-        style={{ 
-          color: i < Math.floor(rating) ? '#faad14' : '#d9d9d9', 
-          marginRight: '2px' 
-        }} 
+        className={`star ${i < Math.floor(rating) ? 'active' : 'inactive'}`}
       />
     ));
   };
 
   return (
-    <div style={{ marginBottom: '24px' }}>
-      <Row justify="space-between" style={{ marginBottom: '16px' }}>
+    <div className="equipment-recommendations">
+      <Row justify="space-between" className="header">
         <Col>
-          <h2 style={{ fontSize: '18px', fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
-            <StarOutlined style={{ color: '#ff4d4f', marginRight: '8px' }} />
+          <h2 className="title">
+            <StarOutlined className="icon" />
             Thiết bị đề xuất cho bạn
           </h2>
         </Col>
@@ -60,30 +58,28 @@ const EquipmentRecommendations = () => {
       <Row gutter={[16, 16]}>
         {recommendations.map((item) => (
           <Col xs={12} sm={6} key={item.id}>
-            <Card hoverable style={{ borderRadius: '8px', transition: 'all 0.3s' }}>
-              <div style={{ position: 'relative', marginBottom: '16px' }}>
+            <Card hoverable className="recommendation-card">
+              <div className="image-container">
                 <img 
                   src={item.imageUrl.startsWith('http') ? item.imageUrl : `${API_URL}/static/${item.imageUrl}`} 
                   alt={item.name}
-                  style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '8px' }} 
                 />
-                
               </div>
               <Meta 
-                title={<h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '8px' }}>{item.name}</h3>} 
-                description={<p style={{ color: '#666' }}>Mã: {item.code}</p>} 
+                title={<h3 className="device-name">{item.name}</h3>} 
+                description={<p className="device-code">Mã: {item.code}</p>} 
               />
-              <div style={{ margin: '8px 0' }}>
+              <div className="rating">
                 {renderStars(4.5)}
-                <span style={{ color: '#666', fontSize: '12px' }}>(4.5)</span>
+                <span className="rating-value">(4.5)</span>
               </div>
-              <p style={{ color: item.quantity > 0 ? '#52c41a' : '#ff4d4f', fontSize: '12px', marginBottom: '8px' }}>
+              <p className={`availability ${item.quantity > 0 ? 'available' : 'unavailable'}`}>
                 {item.quantity > 0 ? `Còn ${item.quantity} sẵn có` : 'Hết hàng'}
               </p>
               <Button
                 block
                 size="small"
-                style={{ background: item.quantity > 0 ? '#ff4d4f' : '#d9d9d9', borderColor: item.quantity > 0 ? '#ff4d4f' : '#d9d9d9', color: '#fff' }}
+                className={`borrow-button ${item.quantity > 0 ? 'available' : 'unavailable'}`}
                 disabled={item.quantity === 0}
                 onClick={() => handleBorrow(item.id)}
               >
