@@ -11,10 +11,10 @@ const UserTable: React.FC<UserTableProps> = ({ data, loading, pagination, onPagi
 			title: 'Họ tên',
 			dataIndex: 'name',
 			key: 'name',
-			render: (text: string, record: UserDataType) => (
+			render: (_text: string, record: UserDataType) => (
 				<Space>
-					<Avatar src={record.avatar}>{record.name[0]}</Avatar>
-					<span>{text}</span>
+					<Avatar src={record.avatar || undefined}>{!record.avatar && record.name?.[0]}</Avatar>
+					<span>{record.name}</span>
 				</Space>
 			),
 		},

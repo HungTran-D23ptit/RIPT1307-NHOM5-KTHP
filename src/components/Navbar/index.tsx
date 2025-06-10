@@ -6,8 +6,6 @@ import React from 'react';
 import { useHistory } from 'umi';
 import NotificationDropdown from './NotificationDropdown';
 import './index.less';
-
-// ✅ Import context để lấy avatar người dùng
 import { useUser } from '@/contexts/UserContext';
 
 const Navbar: React.FC = () => {
@@ -56,7 +54,7 @@ const Navbar: React.FC = () => {
 				<NotificationDropdown />
 				<Dropdown overlay={menu} placement='bottomRight'>
 					<Avatar
-						src={user?.avatar} // ✅ Ưu tiên avatar người dùng nếu có
+						src={user?.avatar} 
 						icon={!user?.avatar && <UserOutlined />}
 						className='navbar-avatar'
 					/>

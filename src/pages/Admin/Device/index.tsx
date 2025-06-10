@@ -27,23 +27,22 @@ const DeviceManagement: React.FC = () => {
 	];
 
 	useEffect(() => {
-		async function fetchDeviceTypes() {
-			try {
-				const response = await rootAPI.get('/admin/device/types');
-				if (response.data && response.data.types) {
-					const types = response.data.types.map((item: { type: string }) => ({
-						label: item.type === 'Other' ? 'Khác' : item.type,
-						value: item.type.toLowerCase().replace(/\s+/g, ''),
-					}));
-					setDeviceTypes([{ label: 'Tất cả', value: 'all' }, ...types]);
-				}
-			} catch (error) {
-				message.error('Không thể tải danh sách loại thiết bị');
-			}
-		}
-		fetchDeviceTypes();
-	}, []);
-
+  async function fetchDeviceTypes() {
+    try {
+      const response = await rootAPI.get('/admin/device/types');
+      if (response.data && response.data.types) {
+        const types = response.data.types.map((item: { type: string }) => ({
+          label: item.type === 'Other' ? 'Khác' : item.type,
+          value: item.type,
+        }));
+        setDeviceTypes([{ label: 'Tất cả', value: 'all' }, ...types]);
+      }
+    } catch (error) {
+      message.error('Không thể tải danh sách loại thiết bị');
+    }
+  }
+  fetchDeviceTypes();
+}, []);
 	const handleRefresh = () => {
 		setRefreshKey(Date.now());
 	};
@@ -115,15 +114,6 @@ const DeviceManagement: React.FC = () => {
 						onChange={(value) => setDeviceType(value)}
 					/>
 				</Col>
-				{/* <Col span={4}>
-					<Select
-						style={{ width: '100%' }}
-						placeholder='Chọn trạng thái'
-						options={deviceStatuses}
-						value={deviceStatus}
-						onChange={(value) => setDeviceStatus(value)}
-					/>
-				</Col> */}
 			</Row>
 
 			<Tabs activeKey={activeTabKey} onChange={(key) => setActiveTabKey(key)} items={items} />
