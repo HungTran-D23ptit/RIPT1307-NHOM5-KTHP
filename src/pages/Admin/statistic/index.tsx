@@ -91,32 +91,7 @@ const StatisticPage: React.FC = () => {
 			width: 120,
 			sorter: (a: MostBorrowedDevice, b: MostBorrowedDevice) => a.borrowCount - b.borrowCount,
 		},
-		{
-			title: 'Tỷ lệ sử dụng',
-			dataIndex: 'usageRate',
-			key: 'usageRate',
-			width: 120,
-			render: (text: number) => (
-				<div style={{ display: 'flex', alignItems: 'center' }}>
-					{text ? `${text.toFixed(2)}%` : 'N/A'}
-					<span style={{ marginLeft: 5, color: text > 0 ? '#52c41a' : '#ff4d4f' }}>
-						{text > 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
-					</span>
-				</div>
-			),
-		},
-		{
-			title: 'Xu hướng',
-			dataIndex: 'trend',
-			key: 'trend',
-			width: 100,
-			render: (text: number) => (
-				<span style={{ color: text > 0 ? '#52c41a' : '#ff4d4f' }}>
-					{text > 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
-					{text ? `${Math.abs(text).toFixed(2)}%` : 'N/A'}
-				</span>
-			),
-		},
+		
 	];
 
 	const processedMostBorrowedDevices = calculateTrendAndUsageRate(mostBorrowedDevices);
