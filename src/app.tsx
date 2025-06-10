@@ -16,6 +16,7 @@ import NotFoundContent from './pages/exception/404';
 import type { IInitialState } from './services/base/typing';
 import './styles/global.less';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { UserProvider } from '@/contexts/UserContext';
 
 // Thêm clientId Google của bạn vào đây
 const googleClientId = '306704646002-0cjbqkv9g9aihgnkgm826hivphfk80g8.apps.googleusercontent.com';
@@ -220,16 +221,22 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 			</a>
 		),
 
-		 childrenRender: (dom) => (
-      <GoogleOAuthProvider clientId={googleClientId}>
-        <OIDCBounder>
-          <ErrorBoundary>
-            <OneSignalBounder>{dom}</OneSignalBounder>
-          </ErrorBoundary>
-        </OIDCBounder>
-      </GoogleOAuthProvider>
-    ),
+		childrenRender: (dom) => (
+  <GoogleOAuthProvider clientId={googleClientId}> 
+      <OIDCBounder>
+        <ErrorBoundary>
+          <OneSignalBounder>{dom}</OneSignalBounder>
+        </ErrorBoundary>
+      </OIDCBounder>
+  </GoogleOAuthProvider>
+),
+
 		menuHeaderRender: undefined,
 		...initialState?.settings,
 	};
 };
+
+
+export function rootContainer(container: React.ReactNode) {
+  return <UserProvider>{container}</UserProvider>;
+}

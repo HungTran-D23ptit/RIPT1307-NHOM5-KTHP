@@ -4,11 +4,15 @@ import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons
 import { Avatar, Dropdown, Menu, message } from 'antd';
 import React from 'react';
 import { useHistory } from 'umi';
-import './index.less';
 import NotificationDropdown from './NotificationDropdown';
+import './index.less';
+
+// ✅ Import context để lấy avatar người dùng
+import { useUser } from '@/contexts/UserContext';
 
 const Navbar: React.FC = () => {
 	const history = useHistory();
+	const user = useUser();
 
 	const handleLogout = async () => {
 		const role = localStorage.getItem('role');
@@ -51,7 +55,11 @@ const Navbar: React.FC = () => {
 			<div className='navbar-right'>
 				<NotificationDropdown />
 				<Dropdown overlay={menu} placement='bottomRight'>
-					<Avatar icon={<UserOutlined />} className='navbar-avatar' />
+					<Avatar
+						src={user?.avatar} // ✅ Ưu tiên avatar người dùng nếu có
+						icon={!user?.avatar && <UserOutlined />}
+						className='navbar-avatar'
+					/>
 				</Dropdown>
 			</div>
 		</div>
