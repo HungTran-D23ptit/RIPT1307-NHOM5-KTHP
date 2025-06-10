@@ -1,6 +1,5 @@
-import { updateDevice } from '@/services/Admin/Device/device';
+import { getDeviceTypes, updateDevice } from '@/services/Admin/Device/device';
 import { DeviceFormData, DeviceResponse, DeviceType } from '@/services/Admin/Device/typing';
-import rootAPI from '@/services/rootAPI';
 import { message } from 'antd';
 import { useEffect, useState } from 'react';
 
@@ -8,19 +7,21 @@ export const useEditDevice = (initialData: DeviceResponse, onSuccess: () => void
 	const [loading, setLoading] = useState(false);
 	const [deviceTypes, setDeviceTypes] = useState<DeviceType[]>([]);
 
-	// ✅ Đặt function declaration lên trước
 	async function fetchDeviceTypes() {
 		try {
-			const response = await rootAPI.get('/admin/device/types');
+			const response = await getDeviceTypes();
+			console.log('API response:', response);
+
 			if (response.data && response.data.types) {
-				const types = response.data.types.map((type: string) => ({
-					label: type === 'Other' ? 'Khác' : type,
-					value: type,
+				const types = response.data.types.map((item: { type: string }) => ({
+					label: item.type === 'Other' ? 'Khác' : item.type,
+					value: item.type,
 				}));
 				setDeviceTypes(types);
 			}
-		} catch (error) {
-			message.error('Không thể tải danh sách loại thiết bị');
+		} catch (error: any) {
+			console.error('Lỗi khi tải danh sách loại thiết bị:', error);
+			message.error(`Không thể tải danh sách loại thiết bị: ${error.message || error}`);
 		}
 	}
 
@@ -44,27 +45,39 @@ export const useEditDevice = (initialData: DeviceResponse, onSuccess: () => void
 				return false;
 			}
 
-			const formData = new FormData();
-			formData.append('status', values.status || 'NORMAL');
-			formData.append('type', values.type);
-			formData.append('name', values.name);
-			formData.append('code', values.code);
-			if (values.description) {
-				formData.append('description', values.description);
-			}
-			formData.append('quantity', values.quantity.toString());
+			// ⚠️ Tạo updateData và chỉ gửi code nếu người dùng đã sửa
+			const updateData: any = {
+				status: values.status,
+				type: values.type,
+				name: values.name,
+				description: values.description,
+				quantity: values.quantity,
+			};
 
+			if (values.code !== initialData.code) {
+				updateData.code = values.code;
+			}
+
+			// Xử lý hình ảnh
 			if (fileList[0]?.originFileObj) {
-				formData.append('image_url', fileList[0].originFileObj);
+				const file = fileList[0].originFileObj;
+				const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg';
+				if (!isJpgOrPng) {
+					message.error('Chỉ chấp nhận file JPG/PNG!');
+					return false;
+				}
+				updateData.image_url = file;
 			} else if (!fileList.length && initialData.image_url) {
-				formData.append('image', 'remove');
+				updateData.image = 'remove';
 			}
 
-			await updateDevice(initialData._id, formData);
+			console.log('Sending update data:', updateData);
+			await updateDevice(initialData._id, updateData);
 			message.success('Cập nhật thiết bị thành công');
 			onSuccess();
 			return true;
 		} catch (error: any) {
+			console.error('Update error:', error);
 			if (error.response?.data?.detail) {
 				const errors = error.response.data.detail;
 				Object.entries(errors).forEach(([field, msg]: [string, any]) => {
@@ -73,6 +86,7 @@ export const useEditDevice = (initialData: DeviceResponse, onSuccess: () => void
 							'Định dạng ảnh không hợp lệ. Vui lòng sử dụng file ảnh (jpg, png, jpeg)',
 						'Trạng thái không hợp lệ.': 'Trạng thái thiết bị không hợp lệ. Vui lòng chọn trạng thái khác.',
 						'Loại thiết bị không hợp lệ.': 'Loại thiết bị không hợp lệ. Vui lòng chọn loại khác.',
+						'Mã thiết bị đã tồn tại.': 'Mã thiết bị đã tồn tại. Vui lòng chọn mã khác.',
 					};
 					message.error(vietnameseMessages[msg] || msg);
 				});

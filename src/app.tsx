@@ -1,5 +1,5 @@
 import Footer from '@/components/Footer';
-import RightContent from '@/components/RightContent';
+import Navbar from '@/components/Navbar';
 import { notification } from 'antd';
 import 'moment/locale/vi';
 import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
@@ -15,7 +15,11 @@ import NotAccessible from './pages/exception/403';
 import NotFoundContent from './pages/exception/404';
 import type { IInitialState } from './services/base/typing';
 import './styles/global.less';
-import { currentRole } from './utils/ip';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { UserProvider } from '@/contexts/UserContext';
+
+// Thêm clientId Google của bạn vào đây
+const googleClientId = '306704646002-0cjbqkv9g9aihgnkgm826hivphfk80g8.apps.googleusercontent.com';
 
 /**  loading */
 export const initialStateConfig = {
@@ -65,6 +69,81 @@ export const request: RequestConfig = {
 	requestInterceptors: [authHeaderInterceptor],
 };
 
+// Function to check if user has access to a route
+const hasRouteAccess = (pathname: string, role: string | null): boolean => {
+	// Public routes
+	if (pathname.includes('/auth') || pathname === '/landing' || pathname === '/') {
+		return true;
+	}
+
+	// No role means no access to protected routes
+	if (!role) {
+		return false;
+	}
+
+	// Admin access
+	if (role === 'admin') {
+		// Admin can access admin routes and common dashboard
+		return pathname.startsWith('/admin') || pathname === '/dashboard';
+	}
+
+	// User access
+	if (role === 'user') {
+		// User can access user routes and common dashboard
+		return pathname.startsWith('/user') || pathname === '/dashboard';
+	}
+
+	return false;
+};
+
+// Function to get default route for role
+const getDefaultRouteForRole = (role: string | null): string => {
+	if (role === 'admin') {
+		return '/admin/dashboard';
+	}
+	if (role === 'user') {
+		return '/user/dashboard';
+	}
+	return '/landing';
+};
+
+// Utility function to get current user role
+const getCurrentUserRole = () => {
+	if (typeof window !== 'undefined') {
+		return localStorage.getItem('role');
+	}
+	return null;
+};
+
+// Function to filter menu items based on user role
+const filterMenuByRole = (menuData: any[], role: string | null): any[] => {
+	if (!role) return [];
+
+	return menuData.filter((item) => {
+		// Skip auth routes and landing page
+		if (item.path?.includes('/auth') || item.path === '/landing') {
+			return false;
+		}
+
+		// Common dashboard is accessible to both roles
+		if (item.path === '/dashboard') {
+			return true;
+		}
+
+		// Admin role access
+		if (role === 'admin') {
+			return item.path?.startsWith('/admin');
+		}
+
+		// User role access
+		if (role === 'user') {
+			return item.path?.startsWith('/user');
+		}
+
+		return false;
+	});
+};
+
 // ProLayout  https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 	return {
@@ -76,25 +155,54 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 			</OIDCBounder>
 		),
 		noFound: <NotFoundContent />,
-		rightContentRender: () => <RightContent />,
+		rightContentRender: () => <Navbar />,
 		disableContentMargin: false,
 
 		footerRender: () => <Footer />,
 
-		onPageChange: () => {
-			if (initialState?.currentUser) {
-				const { location } = history;
-				const isUncheckPath = unCheckPermissionPaths.some((path) => window.location.pathname.includes(path));
+		// Filter menu items based on user role
+		menuDataRender: (menuData) => {
+			const userRole = getCurrentUserRole();
+			return filterMenuByRole(menuData, userRole);
+		},
 
-				if (location.pathname === '/') {
-					history.replace('/landing'); 
-				} else if (
+		onPageChange: () => {
+			const { location } = history;
+			const currentRole = getCurrentUserRole();
+			const isUncheckPath = unCheckPermissionPaths.some((path) => window.location.pathname.includes(path));
+
+			// Handle root path redirect
+			if (location.pathname === '/') {
+				if (currentRole) {
+					history.replace(getDefaultRouteForRole(currentRole));
+				} else {
+					history.replace('/landing');
+				}
+				return;
+			}
+
+			// Check route access based on role
+			if (!isUncheckPath && !hasRouteAccess(location.pathname, currentRole)) {
+				if (!currentRole) {
+					// Not logged in, redirect to login
+					history.replace('/auth/login');
+				} else {
+					// Logged in but no access, redirect to 403
+					history.replace('/403');
+				}
+				return;
+			}
+
+			// Original permission checking logic
+			if (initialState?.currentUser) {
+				if (
 					!isUncheckPath &&
 					currentRole &&
 					initialState?.authorizedPermissions?.length &&
 					!initialState?.authorizedPermissions?.find((item) => item.rsname === currentRole)
-				)
+				) {
 					history.replace('/403');
+				}
 			}
 		},
 
@@ -114,15 +222,21 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 		),
 
 		childrenRender: (dom) => (
-			<OIDCBounder>
-				<ErrorBoundary>
-					{/* <TechnicalSupportBounder> */}
-					<OneSignalBounder>{dom}</OneSignalBounder>
-					{/* </TechnicalSupportBounder> */}
-				</ErrorBoundary>
-			</OIDCBounder>
-		),
+  <GoogleOAuthProvider clientId={googleClientId}> 
+      <OIDCBounder>
+        <ErrorBoundary>
+          <OneSignalBounder>{dom}</OneSignalBounder>
+        </ErrorBoundary>
+      </OIDCBounder>
+  </GoogleOAuthProvider>
+),
+
 		menuHeaderRender: undefined,
 		...initialState?.settings,
 	};
 };
+
+
+export function rootContainer(container: React.ReactNode) {
+  return <UserProvider>{container}</UserProvider>;
+}

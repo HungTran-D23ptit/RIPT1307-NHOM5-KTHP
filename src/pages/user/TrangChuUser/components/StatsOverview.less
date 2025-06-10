@@ -1,0 +1,120 @@
+.stats-overview {
+  margin-bottom: 16px;
+
+  .title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+
+    .icon {
+      color: #ff4d4f;
+      margin-right: 8px;
+    }
+  }
+
+  .stat-card {
+    border-radius: 8px;
+    padding: 8px;
+    color: #fff;
+
+    &.borrowing {
+      background: linear-gradient(to bottom right, #1976D2, #1565C0);
+    }
+
+    &.returned {
+      background: linear-gradient(to bottom right, #388E3C, #2E7D32);
+    }
+
+    &.pending {
+      background: linear-gradient(to bottom right, #FFA000, #FF8F00);
+    }
+
+    &.overdue {
+      background: linear-gradient(to bottom right, #D32F2F, #C62828);
+    }
+
+    .stat-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .stat-info {
+        .label {
+          color: #fff;
+          font-size: 12px;
+          margin: 0 0 4px;
+        }
+
+        .value {
+          font-size: 32px;
+          font-weight: bold;
+          margin: 0;
+        }
+
+        .unit {
+          color: #fff;
+          font-size: 12px;
+          margin: 4px 0 0;
+        }
+      }
+
+      .icon-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &.borrowing {
+          background: #42A5F5;
+        }
+
+        &.returned {
+          background: #66BB6A;
+        }
+
+        &.pending {
+          background: #FFCA28;
+        }
+
+        &.overdue {
+          background: #EF5350;
+        }
+
+        .icon {
+          font-size: 24px;
+          color: #fff;
+        }
+      }
+    }
+
+    .rating {
+      margin-top: 4px;
+
+      .label {
+        color: #fff;
+        font-size: 12px;
+        margin: 0 0 4px;
+      }
+
+      .stars {
+        display: flex;
+        gap: 4px;
+
+        .star {
+          font-size: 12px;
+          color: #FFD700;
+        }
+      }
+    }
+
+    .note {
+      color: #fff;
+      font-size: 12px;
+      margin: 4px 0 0;
+    }
+  }
+} 

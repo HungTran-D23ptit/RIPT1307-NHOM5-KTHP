@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import AddDeviceModal from './components/AddDeviceModal';
 import AvailableDevices from './components/AvailableDevices';
 import BorrowedDevices from './components/BorrowedDevices';
-import MaintenanceDevices from './components/MaintenanceDecices';
+import MaintenanceDevices from './components/MaintenanceDevices';
 
 const { Search } = Input;
 
@@ -19,47 +19,32 @@ const DeviceManagement: React.FC = () => {
 	const [refreshKey, setRefreshKey] = useState(Date.now());
 	const [deviceTypes, setDeviceTypes] = useState<DeviceType[]>([{ label: 'Tất cả', value: 'all' }]);
 
-	// const deviceStatuses = [
-	//   { label: 'Tất cả', value: 'all' },
-	//   { label: 'Có sẵn', value: 'NORMAL' },
-	//   { label: 'Đang cho mượn', value: 'BORROWED' },
-	//   { label: 'Đang bảo trì', value: 'MAINTENANCE' },
-	// ];
+	const deviceStatuses = [
+		{ label: 'Tất cả', value: 'all' },
+		{ label: 'Có sẵn', value: 'NORMAL' },
+		{ label: 'Đang cho mượn', value: 'BORROWED' },
+		{ label: 'Đang bảo trì', value: 'MAINTENANCE' },
+	];
 
 	useEffect(() => {
-		async function fetchDeviceTypes() {
-			try {
-				const response = await rootAPI.get('/admin/device/types');
-				if (response.data && response.data.types) {
-					const types = response.data.types.map((type: string) => ({
-						label: type === 'Other' ? 'Khác' : type,
-						value: type,
-					}));
-					setDeviceTypes([{ label: 'Tất cả', value: 'all' }, ...types]);
-				}
-			} catch (error) {
-				message.error('Không thể tải danh sách loại thiết bị');
-			}
-		}
-		fetchDeviceTypes();
-	}, []);
-
+  async function fetchDeviceTypes() {
+    try {
+      const response = await rootAPI.get('/admin/device/types');
+      if (response.data && response.data.types) {
+        const types = response.data.types.map((item: { type: string }) => ({
+          label: item.type === 'Other' ? 'Khác' : item.type,
+          value: item.type,
+        }));
+        setDeviceTypes([{ label: 'Tất cả', value: 'all' }, ...types]);
+      }
+    } catch (error) {
+      message.error('Không thể tải danh sách loại thiết bị');
+    }
+  }
+  fetchDeviceTypes();
+}, []);
 	const handleRefresh = () => {
 		setRefreshKey(Date.now());
-	};
-
-	const handleTabChange = (key: string) => {
-		setActiveTabKey(key);
-		setDeviceType('all');
-		setDeviceStatus('all');
-	};
-
-	const handleSearch = (value: string) => {
-		setSearchText(value);
-	};
-
-	const handleDeviceTypeChange = (value: string) => {
-		setDeviceType(value);
 	};
 
 	const items = [
@@ -71,7 +56,7 @@ const DeviceManagement: React.FC = () => {
 					key={refreshKey}
 					searchText={searchText}
 					deviceType={deviceType}
-					deviceStatus={deviceStatus}
+					deviceStatus='NORMAL'
 					onSuccess={handleRefresh}
 				/>
 			),
@@ -84,7 +69,7 @@ const DeviceManagement: React.FC = () => {
 					key={refreshKey}
 					searchText={searchText}
 					deviceType={deviceType}
-					deviceStatus={deviceStatus}
+					deviceStatus='BORROWED'
 					onSuccess={handleRefresh}
 				/>
 			),
@@ -97,7 +82,7 @@ const DeviceManagement: React.FC = () => {
 					key={refreshKey}
 					searchText={searchText}
 					deviceType={deviceType}
-					deviceStatus={deviceStatus}
+					deviceStatus='MAINTENANCE'
 					onSuccess={handleRefresh}
 				/>
 			),
@@ -106,18 +91,18 @@ const DeviceManagement: React.FC = () => {
 
 	return (
 		<Card>
+			<h1>Quản lý thiết bị</h1>
 			<Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
 				<Col span={24} style={{ textAlign: 'right' }}>
 					<Button type='primary' icon={<PlusOutlined />} onClick={() => setIsModalVisible(true)}>
 						Thêm thiết bị mới
 					</Button>
 				</Col>
-				<Col span={20}>
+				<Col span={16}>
 					<Search
 						placeholder='Tìm kiếm thiết bị...'
-						onChange={(e) => handleSearch(e.target.value)}
+						onSearch={(value) => setSearchText(value)}
 						style={{ width: '100%' }}
-						allowClear
 					/>
 				</Col>
 				<Col span={4}>
@@ -126,15 +111,20 @@ const DeviceManagement: React.FC = () => {
 						placeholder='Chọn loại thiết bị'
 						options={deviceTypes}
 						value={deviceType}
-						onChange={handleDeviceTypeChange}
-						allowClear
+						onChange={(value) => setDeviceType(value)}
 					/>
 				</Col>
 			</Row>
 
-			<Tabs activeKey={activeTabKey} onChange={handleTabChange} items={items} />
-
-			<AddDeviceModal visible={isModalVisible} onCancel={() => setIsModalVisible(false)} onSuccess={handleRefresh} />
+			<Tabs activeKey={activeTabKey} onChange={(key) => setActiveTabKey(key)} items={items} />
+			<AddDeviceModal
+				visible={isModalVisible}
+				onCancel={() => setIsModalVisible(false)}
+				onSuccess={() => {
+					setIsModalVisible(false);
+					handleRefresh();
+				}}
+			/>
 		</Card>
 	);
 };

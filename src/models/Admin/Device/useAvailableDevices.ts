@@ -1,6 +1,11 @@
 import { deleteDevice, DeviceResponse, getDevices, updateDevice } from '@/services/Admin/Device/device';
-import { message } from 'antd';
+import { message, Tag } from 'antd';
 import { useEffect, useState } from 'react';
+import React from 'react';
+
+const renderStatusTag = (color: string, text: string) => {
+	return React.createElement(Tag, { color, style: { margin: 0 } }, text);
+};
 
 export const useAvailableDevices = (
 	searchText: string,
@@ -22,7 +27,7 @@ export const useAvailableDevices = (
 				const response = await getDevices({
 					search: searchText,
 					type: deviceType === 'all' ? undefined : deviceType,
-					status: deviceStatus === 'all' ? undefined : deviceStatus,
+					status: deviceStatus,
 					page,
 					per_page: 10,
 				});
@@ -48,10 +53,10 @@ export const useAvailableDevices = (
 		};
 	}, [searchText, deviceType, deviceStatus, page]);
 
-	const handleUpdate = async (id: string) => {
+	const handleUpdate = async (id: string, newStatus: string) => {
 		try {
 			await updateDevice(id, {
-				status: 'MAINTENANCE',
+				status: newStatus,
 			});
 			message.success('Cập nhật trạng thái thành công');
 			if (onSuccess) onSuccess();
@@ -71,14 +76,19 @@ export const useAvailableDevices = (
 	};
 
 	const getStatusTag = (status: string) => {
-		return {
-			color: 'green',
-			text: 'Có sẵn',
+		const statusConfig = {
+			NORMAL: { color: '#52c41a', text: 'Sẵn sàng để mượn' },
+			MAINTENANCE: { color: '#faad14', text: 'Đang bảo trì' },
 		};
+
+		const config = statusConfig[status as keyof typeof statusConfig];
+		if (!config) return null;
+
+		return renderStatusTag(config.color, config.text);
 	};
 
 	const getDeviceTypeLabel = (type: string | null) => {
-		if (!type) return 'Không xác định';
+		if (!type) return 'Chưa phân loại';
 		const types = {
 			computer: 'Máy tính',
 			monitor: 'Màn hình',

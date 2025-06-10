@@ -14,11 +14,13 @@ export const useAddDevice = (onSuccess: () => void) => {
 		const fetchDeviceTypes = async () => {
 			try {
 				const response = await rootAPI.get('/admin/device/types');
+
 				if (response.data && response.data.types && isMounted) {
-					const types = response.data.types.map((type: string) => ({
-						label: type === 'Other' ? 'Khác' : type,
-						value: type,
+					const types = response.data.types.map((item: { type: string }) => ({
+						label: item.type === 'Other' ? 'Khác' : item.type,
+						value: item.type,
 					}));
+
 					setDeviceTypes(types);
 				}
 			} catch (error) {
@@ -46,11 +48,12 @@ export const useAddDevice = (onSuccess: () => void) => {
 			}
 
 			const formData = new FormData();
-			formData.append('name', values.name);
-			formData.append('code', values.code);
-			formData.append('type', values.type);
-			formData.append('description', values.description || '');
-			formData.append('quantity', values.quantity.toString());
+			// Kiểm tra và thêm các trường bắt buộc
+			if (values.name) formData.append('name', values.name);
+			if (values.code) formData.append('code', values.code);
+			if (values.type) formData.append('type', values.type);
+			if (values.description) formData.append('description', values.description);
+			if (values.quantity) formData.append('quantity', values.quantity.toString());
 			formData.append('status', 'NORMAL');
 
 			// Xử lý file
