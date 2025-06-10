@@ -3,11 +3,11 @@ import {
 	BorrowStats,
 	DeviceStatusData,
 	DeviceTotalStats,
-	DeviceTypeStats,
+	DeviceTypeResponse,
 	MostBorrowedDevice,
 	UserStats,
 } from '@/services/Admin/Stats';
-import { fetchAllStats } from '@/services/Admin/Stats/api';
+import { fetchAllStats, fetchDeviceTypes } from '@/services/Admin/Stats/api';
 import {
 	ArrowDownOutlined,
 	ArrowUpOutlined,
@@ -26,22 +26,30 @@ const StatisticPage: React.FC = () => {
 	const [userStats, setUserStats] = useState<UserStats | null>(null);
 	const [deviceTotalStats, setDeviceTotalStats] = useState<DeviceTotalStats | null>(null);
 	const [deviceTypes, setDeviceTypes] = useState<string[]>([]);
-	const [deviceTypeStats, setDeviceTypeStats] = useState<DeviceTypeStats[]>([]);
+	const [deviceTypeStats, setDeviceTypeStats] = useState<DeviceTypeResponse['types']>([]);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const loadData = async () => {
 			try {
 				setLoading(true);
-				const data = await fetchAllStats();
-				setBorrowStats(data.borrowStats);
-				setMostBorrowedDevices(data.mostBorrowedDevices);
-				setUserStats(data.userStats);
-				setDeviceTotalStats(data.deviceTotalStats);
-				setDeviceTypes(data.deviceTypes);
-				setDeviceTypeStats(data.deviceTypeStats);
-			} catch (error) {
-				message.error('Không thể tải dữ liệu thống kê.');
+				const [statsData, deviceTypesData] = await Promise.all([
+					fetchAllStats(),
+					fetchDeviceTypes()
+				]);
+				setBorrowStats(statsData.borrowStats);
+				setMostBorrowedDevices(statsData.mostBorrowedDevices);
+				setUserStats(statsData.userStats);
+				setDeviceTotalStats(statsData.deviceTotalStats);
+				setDeviceTypes(statsData.deviceTypes);
+				setDeviceTypeStats(deviceTypesData.types);
+			} catch (error: any) {
+				if (error.message === 'No authentication token found') {
+					message.error('Vui lòng đăng nhập để tiếp tục');
+					// Có thể thêm logic chuyển hướng về trang đăng nhập ở đây
+				} else {
+					message.error('Không thể tải dữ liệu thống kê.');
+				}
 			} finally {
 				setLoading(false);
 			}
@@ -174,7 +182,7 @@ const StatisticPage: React.FC = () => {
 						</Card>
 					</Col>
 					<Col span={12}>
-						<Card title='Tỉ lệ sử dụng thiết bị'>
+						<Card title='Tỉ lệ số lượng thiết bị'>
 							<Pie
 								data={deviceTypeStats}
 								angleField='count'

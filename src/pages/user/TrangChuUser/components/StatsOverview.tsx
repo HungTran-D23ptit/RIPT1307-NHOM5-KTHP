@@ -59,16 +59,6 @@ const StatsOverview = () => {
                 <CheckCircleOutlined className="icon" />
               </div>
             </div>
-            <div className="rating">
-              <p className="label">Đánh giá trung bình</p>
-              <div className="stars">
-                <StarFilled className="star" />
-                <StarFilled className="star" />
-                <StarFilled className="star" />
-                <StarFilled className="star" />
-                <StarFilled className="star" />
-              </div>
-            </div>
           </Card>
         </Col>
         <Col xs={12} sm={12} lg={6}>
