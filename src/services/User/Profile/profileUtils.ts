@@ -76,7 +76,7 @@ export const handleFormSubmit = async (
         const response = await updateUserProfileWithFormData(formData);
         if (response.data && response.data.data && response.data.data.user) {
             message.success(response.data.data.message || 'Cập nhật thông tin thành công!');
-            setUserData(response.data.data.user);
+            setUserData?.(response.data.data.user);
             setNewAvatarFile(null);
             setNewAvatarPreview(null);
             await fetchUserProfileAndFormat(form, setUserData, setLoading);
