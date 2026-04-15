@@ -37,6 +37,11 @@ export default defineConfig({
 		'primary-color': defaultSettings.primaryColor,
 		'border-radius-base': defaultSettings.borderRadiusBase,
 	},
+	lessLoader: {
+		lessOptions: {
+			javascriptEnabled: true,
+		},
+	},
 	// esbuild is father build tools
 	// https://umijs.org/plugins/plugin-esbuild
 	esbuild: {},
