@@ -46,6 +46,7 @@ export default defineConfig({
 	// esbuild is father build tools
 	// https://umijs.org/plugins/plugin-esbuild
 	esbuild: {},
+	clean: false,
 	chainWebpack(config) {
 		config.module
 			.rule('less')

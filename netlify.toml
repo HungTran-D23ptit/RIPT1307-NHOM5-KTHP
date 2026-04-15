@@ -1,6 +1,7 @@
 [build]
   command = "npm run build"
   publish = "dist"
+  ignore = "git diff --quiet HEAD^ HEAD -- package-lock.json yarn.lock .nvmrc netlify.toml"
 
 [build.environment]
   NODE_VERSION = "18"
