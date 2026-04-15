@@ -40,11 +40,28 @@ export default defineConfig({
 	lessLoader: {
 		lessOptions: {
 			javascriptEnabled: true,
+			math: 'always',
 		},
 	},
 	// esbuild is father build tools
 	// https://umijs.org/plugins/plugin-esbuild
 	esbuild: {},
+	chainWebpack(config) {
+		config.module
+			.rule('less')
+			.test(/\.less$/)
+			.use('less-loader')
+			.loader('less-loader')
+			.tap((options) => {
+				return {
+					...options,
+					lessOptions: {
+						javascriptEnabled: true,
+						math: 'always',
+					},
+				};
+			});
+	},
 	title: false,
 	ignoreMomentLocale: true,
 	// proxy: proxy[REACT_APP_ENV || 'dev'],
