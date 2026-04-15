@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3456';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://borrowease-back-end.onrender.com';
 
 const rootAPI = axios.create({
 	baseURL: API_BASE_URL,

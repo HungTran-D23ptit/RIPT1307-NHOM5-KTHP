@@ -44,20 +44,9 @@ export interface DeviceTypeResponse {
 }
 
 export const fetchDeviceTypes = async (): Promise<DeviceTypeResponse> => {
-	const token = localStorage.getItem('token');
-	if (!token) {
-		throw new Error('No authentication token found');
-	}
-
-	const response = await fetch('http://localhost:3456/admin/device/types', {
-		headers: {
-			'Authorization': `Bearer ${token}`,
-			'Content-Type': 'application/json'
-		}
-	});
-	
-	if (!response.ok) {
+	const response = await request.get<{ types: string[] }>('/admin/device/types');
+	if (!response || !response.data) {
 		throw new Error('Failed to fetch device types');
 	}
-	return response.json();
+	return response.data;
 };
