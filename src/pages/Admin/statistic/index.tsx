@@ -97,11 +97,11 @@ const StatisticPage: React.FC = () => {
 	const deviceStatusData: DeviceStatusData[] = [
 		{
 			type: 'Có sẵn',
-			value: deviceTotalStats?.NORMAL || 0,
+			count: deviceTotalStats?.NORMAL || 0,
 		},
 		{
 			type: 'Đang bảo trì',
-			value: deviceTotalStats?.MAINTENANCE || 0,
+			count: deviceTotalStats?.MAINTENANCE || 0,
 		},
 	];
 
@@ -134,12 +134,22 @@ const StatisticPage: React.FC = () => {
 						<Card title='Phân bố trạng thái thiết bị'>
 							<Pie
 								data={deviceStatusData}
-								angleField='value'
+								angleField='count'
 								colorField='type'
 								radius={0.8}
 								label={{
 									type: 'outer',
 									content: ({ percent }: any) => `${(percent * 100).toFixed(1)}%`,
+								}}
+								tooltip={{
+									formatter: (datum: any) => {
+										return { name: datum.type, value: datum.count };
+									},
+								}}
+								meta={{
+									count: {
+										alias: 'Số lượng',
+									},
 								}}
 								interactions={[
 									{
@@ -163,6 +173,16 @@ const StatisticPage: React.FC = () => {
 								label={{
 									type: 'outer',
 									content: ({ percent }: any) => `${(percent * 100).toFixed(1)}%`,
+								}}
+								tooltip={{
+									formatter: (datum: any) => {
+										return { name: datum.type, value: datum.count };
+									},
+								}}
+								meta={{
+									count: {
+										alias: 'Số lượng',
+									},
 								}}
 								interactions={[
 									{
