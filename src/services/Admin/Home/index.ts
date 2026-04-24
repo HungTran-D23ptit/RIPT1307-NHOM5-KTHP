@@ -12,12 +12,12 @@ export async function getAdminActivityLogs(): Promise<AdminActivityLogResponse> 
 }
 
 export async function getDeviceTypeStats(): Promise<DeviceTypeStat[]> {
-  const res = await rootAPI.get<{ data: { types: DeviceTypeStat[] } }>('/admin/device/types');
-  return res.data.types;
+  const res = await rootAPI.get<{ data: DeviceTypeStat[] }>('/admin/device/types');
+  return res.data.data;
 }
 
 
 export async function getDeviceTotalStats(): Promise<DeviceTotalStats> {
-  const res = await rootAPI.get<{ data: { total: DeviceTotalStats } }>('/admin/device/statistic/total');
-  return res.data.total;
+  const res = await rootAPI.get<{ data: DeviceTotalStats }>('/admin/device/statistic/total');
+  return res.data.data;
 }
