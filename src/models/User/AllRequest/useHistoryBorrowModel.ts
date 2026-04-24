@@ -24,10 +24,14 @@ export function useHistoryBorrowModel() {
 	const fetchData = async () => {
 		try {
 			const res = await getBorrowHistory();
-			const all = [...res.borrowing.data, ...res.returned.data, ...res.overdue.data];
+			const all = [
+				...(res?.borrowing?.data || []),
+				...(res?.returned?.data || []),
+				...(res?.overdue?.data || []),
+			];
 			setAllRecords(all);
 			setFilteredRecords(all);
-			setReviewCount(res.total_reviews || 0);
+			setReviewCount(res?.total_reviews || 0);
 		} catch (error) {
 			message.error('Lấy dữ liệu lịch sử mượn thất bại');
 		}

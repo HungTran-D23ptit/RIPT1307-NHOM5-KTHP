@@ -11,12 +11,12 @@ export const fetchAllStats = async () => {
 			request.get('/admin/device/types'),
 		]);
 
-		// Extract data from the jsonify wrapper (res.data is the wrapper, res.data.data is the actual content)
-		const borrowStats = borrowRes.data?.data;
-		const mostBorrowedDevices = deviceRes.data?.data;
-		const userStats = userRes.data?.data;
-		const deviceTotalStats = deviceTotalRes.data?.data;
-		const typesResponse = deviceTypesRes.data?.data;
+		// Extract data from the jsonify wrapper (res.data is the actual content)
+		const borrowStats = borrowRes.data;
+		const mostBorrowedDevices = deviceRes.data;
+		const userStats = userRes.data;
+		const deviceTotalStats = deviceTotalRes.data;
+		const typesResponse = deviceTypesRes.data;
 
 		// Ensure we are getting an array of types
 		const typeStats = Array.isArray(typesResponse?.types) ? typesResponse.types : [];

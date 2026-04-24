@@ -21,7 +21,7 @@ export const useDeviceManagement = () => {
 				if (state.status) params.status = state.status;
 
 				const response = await getDevices(params);
-				let filteredDevices = response.data.data;
+				let filteredDevices = response.data?.data?.data || [];
 
 				if (state.type) {
 					filteredDevices = filteredDevices.filter((d) => d.type === state.type);

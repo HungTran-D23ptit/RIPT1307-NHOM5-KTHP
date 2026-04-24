@@ -12,7 +12,7 @@ export async function createBorrowRequest(deviceId: string, data: {
 
 export async function getBorrowHistory(): Promise<GetBorrowHistoryResponse> {
   const res = await rootAPI.get('/user/borrow-requests/history/all');
-  return res.data;
+  return res.data.data;
 }
 
 export async function reviewBorrowRequest(id: string, data: {
