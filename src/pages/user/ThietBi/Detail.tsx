@@ -2,6 +2,7 @@ import { useDeviceDetail } from '@/models/User/ThietBi/detail';
 import { ArrowLeftOutlined, StarFilled, ZoomInOutlined } from '@ant-design/icons';
 import { Button, Card, Empty, Modal, Rate, Spin, Tag, Tooltip } from 'antd';
 import { history, useParams } from 'umi';
+import { API_URL } from '@/config/config';
 import './Detail.less';
 
 const Detail = () => {
@@ -29,7 +30,13 @@ const Detail = () => {
 				<div className='thiet-bi__detail-flexbox'>
 					<div className='thiet-bi__detail-img-wrap' onClick={toggleImageModal}>
 						<img
-							src={device.image_url || 'https://via.placeholder.com/400x260?text=No+Image'}
+							src={
+								device.image_url
+									? device.image_url.startsWith('http')
+										? device.image_url
+										: `${API_URL}/static/${device.image_url}`
+									: 'https://via.placeholder.com/400x260?text=No+Image'
+							}
 							alt={device.name}
 							className='thiet-bi__detail-img'
 						/>
@@ -122,7 +129,13 @@ const Detail = () => {
 				className='image-modal'
 			>
 				<img
-					src={device.image_url || 'https://via.placeholder.com/400x260?text=No+Image'}
+					src={
+						device.image_url
+							? device.image_url.startsWith('http')
+								? device.image_url
+								: `${API_URL}/static/${device.image_url}`
+							: 'https://via.placeholder.com/400x260?text=No+Image'
+					}
 					alt={device.name}
 					style={{ width: '100%', height: 'auto', maxHeight: '80vh', objectFit: 'contain' }}
 				/>

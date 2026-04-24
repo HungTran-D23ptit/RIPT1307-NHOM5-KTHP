@@ -3,6 +3,7 @@ import { AvailableDevicesProps } from '@/services/Admin/Device/device';
 import { Button, Card, Col, Image, Popconfirm, Row, Tag } from 'antd';
 import React, { useState } from 'react';
 import EditDeviceModal from './EditDeviceModal';
+import { API_URL } from '@/config/config';
 import { history } from 'umi';
 
 const AvailableDevices: React.FC<AvailableDevicesProps> = ({ searchText, deviceType, deviceStatus, onSuccess }) => {
@@ -29,7 +30,13 @@ const AvailableDevices: React.FC<AvailableDevicesProps> = ({ searchText, deviceT
 							cover={
 								<Image
 									alt={device.name}
-									src={device.image_url || 'https://via.placeholder.com/300x200?text=No+Image'}
+									src={
+										device.image_url
+											? device.image_url.startsWith('http')
+												? device.image_url
+												: `${API_URL}/static/${device.image_url}`
+											: 'https://via.placeholder.com/300x200?text=No+Image'
+									}
 									style={{ height: 200, objectFit: 'cover' }}
 									preview={false}
 								/>

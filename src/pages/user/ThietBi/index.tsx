@@ -2,6 +2,7 @@ import { useDeviceManagement } from '@/models/User/ThietBi';
 import { DEVICE_TYPES } from '@/models/User/ThietBi/constants';
 import { history } from 'umi';
 
+import { API_URL } from '@/config/config';
 import './index.less';
 
 const ThietBi = () => {
@@ -39,7 +40,13 @@ const ThietBi = () => {
 						<div key={device._id} className='thiet-bi__card'>
 							<img
 								className='thiet-bi__card-image'
-								src={device.image_url || 'https://via.placeholder.com/300x200?text=No+Image'}
+								src={
+									device.image_url
+										? device.image_url.startsWith('http')
+											? device.image_url
+											: `${API_URL}/static/${device.image_url}`
+										: 'https://via.placeholder.com/300x200?text=No+Image'
+								}
 								alt={device.name}
 							/>
 							<div className='thiet-bi__card-body'>

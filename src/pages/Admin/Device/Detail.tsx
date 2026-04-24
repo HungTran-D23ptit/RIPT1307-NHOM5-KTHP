@@ -3,6 +3,7 @@ import { useParams, history } from 'umi';
 import { Card, Button, Tag, Spin, Rate, Empty, Tooltip } from 'antd';
 import { getDeviceById } from '@/services/Admin/Device/device';
 import { StarFilled, ArrowLeftOutlined } from '@ant-design/icons';
+import { API_URL } from '@/config/config';
 import './Detail.less';
 
 const statusMap = {
@@ -51,7 +52,13 @@ const Detail = () => {
         <div className="thiet-bi__detail-flexbox">
           <div className="thiet-bi__detail-img-wrap">
             <img
-              src={device.image_url || 'https://via.placeholder.com/400x260?text=No+Image'}
+              src={
+                device.image_url
+                  ? device.image_url.startsWith('http')
+                    ? device.image_url
+                    : `${API_URL}/static/${device.image_url}`
+                  : 'https://via.placeholder.com/400x260?text=No+Image'
+              }
               alt={device.name}
               className="thiet-bi__detail-img"
             />
