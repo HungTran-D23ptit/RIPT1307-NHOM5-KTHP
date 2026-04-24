@@ -33,20 +33,17 @@ const StatisticPage: React.FC = () => {
 		const loadData = async () => {
 			try {
 				setLoading(true);
-				const [statsData, deviceTypesData] = await Promise.all([
-					fetchAllStats(),
-					fetchDeviceTypes()
-				]);
+				const statsData = await fetchAllStats();
+
 				setBorrowStats(statsData.borrowStats);
 				setMostBorrowedDevices(statsData.mostBorrowedDevices);
 				setUserStats(statsData.userStats);
 				setDeviceTotalStats(statsData.deviceTotalStats);
 				setDeviceTypes(statsData.deviceTypes);
-				setDeviceTypeStats(deviceTypesData.types);
+				setDeviceTypeStats(statsData.deviceTypeStats);
 			} catch (error: any) {
 				if (error.message === 'No authentication token found') {
 					message.error('Vui lòng đăng nhập để tiếp tục');
-					// Có thể thêm logic chuyển hướng về trang đăng nhập ở đây
 				} else {
 					message.error('Không thể tải dữ liệu thống kê.');
 				}
