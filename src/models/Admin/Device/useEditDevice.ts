@@ -8,11 +8,12 @@ export const useEditDevice = (initialData: DeviceResponse, onSuccess: () => void
 	const [deviceTypes, setDeviceTypes] = useState<DeviceType[]>([]);
 
 	async function fetchDeviceTypes() {
+		let isMounted = true;
 		try {
 			const response = await getDeviceTypes();
 			console.log('API response:', response);
 
-			if (response.data && response.data.data) {
+			if (response.data && response.data.data && isMounted) {
 				const types = response.data.data.map((item: { type: string }) => ({
 					label: item.type === 'Other' ? 'Khác' : item.type,
 					value: item.type,
@@ -23,6 +24,7 @@ export const useEditDevice = (initialData: DeviceResponse, onSuccess: () => void
 			console.error('Lỗi khi tải danh sách loại thiết bị:', error);
 			message.error(`Không thể tải danh sách loại thiết bị: ${error.message || error}`);
 		}
+		return () => { isMounted = false; };
 	}
 
 	useEffect(() => {
