@@ -29,11 +29,11 @@ const BorrowedDevices: React.FC<BorrowedDevicesProps> = ({
 		setLoading(true);
 		try {
 			const response = await getBorrowingDevices({ page, per_page: pageSize });
-			setData(response.data.borrowings);
+			setData(response.data.data.borrowings);
 			setPagination({
-				current: response.data.page,
-				pageSize: response.data.per_page,
-				total: response.data.total,
+				current: response.data.data.page,
+				pageSize: response.data.data.per_page,
+				total: response.data.data.total,
 			});
 		} catch (error) {
 			message.error('Không thể tải danh sách thiết bị đang cho mượn');

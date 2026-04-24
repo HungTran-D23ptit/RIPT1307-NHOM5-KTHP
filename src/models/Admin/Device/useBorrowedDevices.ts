@@ -18,8 +18,8 @@ export const useBorrowedDevices = (searchText: string, deviceType: string, devic
 				page,
 				per_page: 10,
 			});
-			setData(response.data.data);
-			setTotal(response.data.total);
+			setData(response.data.data.borrowings);
+			setTotal(response.data.data.total);
 		} catch (error) {
 			message.error('Không thể tải danh sách thiết bị đang mượn');
 		} finally {

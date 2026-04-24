@@ -30,8 +30,8 @@ const DeviceManagement: React.FC = () => {
   async function fetchDeviceTypes() {
     try {
       const response = await rootAPI.get('/admin/device/types');
-      if (response.data && response.data.types) {
-        const types = response.data.types.map((item: { type: string }) => ({
+      if (response.data && response.data.data) {
+        const types = response.data.data.map((item: { type: string }) => ({
           label: item.type === 'Other' ? 'Khác' : item.type,
           value: item.type,
         }));

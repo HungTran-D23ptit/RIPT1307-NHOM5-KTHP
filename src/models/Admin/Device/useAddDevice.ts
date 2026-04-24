@@ -15,8 +15,8 @@ export const useAddDevice = (onSuccess: () => void) => {
 			try {
 				const response = await rootAPI.get('/admin/device/types');
 
-				if (response.data && response.data.types && isMounted) {
-					const types = response.data.types.map((item: { type: string }) => ({
+				if (response.data && response.data.data && isMounted) {
+					const types = response.data.data.map((item: { type: string }) => ({
 						label: item.type === 'Other' ? 'Khác' : item.type,
 						value: item.type,
 					}));

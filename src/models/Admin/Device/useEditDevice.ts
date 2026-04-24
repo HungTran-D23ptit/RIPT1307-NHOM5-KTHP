@@ -12,8 +12,8 @@ export const useEditDevice = (initialData: DeviceResponse, onSuccess: () => void
 			const response = await getDeviceTypes();
 			console.log('API response:', response);
 
-			if (response.data && response.data.types) {
-				const types = response.data.types.map((item: { type: string }) => ({
+			if (response.data && response.data.data) {
+				const types = response.data.data.map((item: { type: string }) => ({
 					label: item.type === 'Other' ? 'Khác' : item.type,
 					value: item.type,
 				}));

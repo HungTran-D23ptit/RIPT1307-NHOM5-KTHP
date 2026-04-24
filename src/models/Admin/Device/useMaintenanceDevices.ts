@@ -27,8 +27,8 @@ export const useMaintenanceDevices = (
 					per_page: 10,
 				});
 				if (mounted) {
-					setDevices(response.data.data);
-					setTotal(response.data.total);
+					setDevices(response.data.data.data);
+					setTotal(response.data.data.total);
 				}
 			} catch (error) {
 				if (mounted) {
