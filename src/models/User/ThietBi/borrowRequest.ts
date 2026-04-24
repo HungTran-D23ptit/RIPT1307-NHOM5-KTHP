@@ -8,7 +8,7 @@ import { BorrowRequestForm, BorrowRequestState } from './types';
 export const fetchDeviceInfo = async (id: string, setDevice: (device: any) => void) => {
 	try {
 		const res = await getDeviceById(id);
-		setDevice(res.data);
+		setDevice(res.data?.data);
 	} catch (error) {
 		message.error('Không thể tải thông tin thiết bị');
 	}
