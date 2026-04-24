@@ -97,11 +97,11 @@ const StatisticPage: React.FC = () => {
 	const deviceStatusData: DeviceStatusData[] = [
 		{
 			type: 'Có sẵn',
-			value: deviceTotalStats?.total?.NORMAL || 0,
+			value: deviceTotalStats?.NORMAL || 0,
 		},
 		{
 			type: 'Đang bảo trì',
-			value: deviceTotalStats?.total?.MAINTENANCE || 0,
+			value: deviceTotalStats?.MAINTENANCE || 0,
 		},
 	];
 
@@ -139,7 +139,7 @@ const StatisticPage: React.FC = () => {
 								radius={0.8}
 								label={{
 									type: 'outer',
-									content: '{name}: {value} ({percentage})',
+									content: ({ percent }: any) => `${(percent * 100).toFixed(1)}%`,
 								}}
 								interactions={[
 									{
@@ -162,7 +162,7 @@ const StatisticPage: React.FC = () => {
 								radius={0.8}
 								label={{
 									type: 'outer',
-									content: '{name}: {value} ({percentage})',
+									content: ({ percent }: any) => `${(percent * 100).toFixed(1)}%`,
 								}}
 								interactions={[
 									{
@@ -249,7 +249,7 @@ const StatisticPage: React.FC = () => {
 					>
 						<Statistic
 							title={<span style={{ color: '#fff', fontSize: '16px' }}>Thiết bị đang bảo trì</span>}
-							value={deviceTotalStats?.total?.MAINTENANCE || 0}
+							value={deviceTotalStats?.MAINTENANCE || 0}
 							precision={0}
 							valueStyle={{ color: '#fff', fontSize: '28px', fontWeight: 'bold' }}
 							prefix={<ExclamationCircleOutlined style={{ color: '#fff', fontSize: '24px' }} />}

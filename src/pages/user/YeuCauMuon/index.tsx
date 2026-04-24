@@ -40,9 +40,9 @@ const YeuCauMuon: React.FC = () => {
                     })
                 ]);
                 setRequests([
-                    ...(approvedResponse?.data?.requests || []),
-                    ...(returningResponse?.data?.requests || []),
-                    ...(overdueResponse?.data?.requests || [])
+                    ...(approvedResponse?.data?.data?.requests || approvedResponse?.data?.requests || []),
+                    ...(returningResponse?.data?.data?.requests || returningResponse?.data?.requests || []),
+                    ...(overdueResponse?.data?.data?.requests || overdueResponse?.data?.requests || [])
                 ]);
             } else {
                 const response = await getBorrowRequests({
@@ -50,7 +50,8 @@ const YeuCauMuon: React.FC = () => {
                     page: 1,
                     per_page: 10,
                 });
-                setRequests(response?.data?.requests || []);
+                const responseData = response?.data?.data || response?.data || response;
+                setRequests(responseData?.requests || []);
             }
         } catch (error) {
             setRequests([]);

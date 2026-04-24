@@ -1,4 +1,5 @@
 import { getUserProfile } from '@/services/User/Profile';
+import { getMeAdmin } from '@/services/Admin/Auth';
 import type { User } from '@/services/Admin/User/typing';
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 
@@ -39,9 +40,15 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
 
 	useEffect(() => {
 		const fetchUser = async () => {
+			const role = localStorage.getItem('role');
+			const token = localStorage.getItem('token');
+			if (!token) return;
+
 			try {
-				const res = await getUserProfile();
-				setUser(res.data?.data);
+				const res = role === 'admin' ? await getMeAdmin() : await getUserProfile();
+				// Backend wraps data in { data: ... } via res.jsonify
+				const userData = res.data?.data || res.data || res;
+				setUser(userData);
 			} catch (err) {
 				console.error('Lỗi khi fetch user profile:', err);
 			}

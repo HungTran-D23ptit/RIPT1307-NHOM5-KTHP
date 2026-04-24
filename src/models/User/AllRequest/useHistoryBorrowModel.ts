@@ -24,6 +24,7 @@ export function useHistoryBorrowModel() {
 	const fetchData = async () => {
 		try {
 			const res = await getBorrowHistory();
+			// getBorrowHistory returns res.data.data (the payload)
 			const all = [
 				...(res?.borrowing?.data || []),
 				...(res?.returned?.data || []),
@@ -33,7 +34,10 @@ export function useHistoryBorrowModel() {
 			setFilteredRecords(all);
 			setReviewCount(res?.total_reviews || 0);
 		} catch (error) {
+			console.error('Fetch borrow history error:', error);
 			message.error('Lấy dữ liệu lịch sử mượn thất bại');
+			setAllRecords([]);
+			setFilteredRecords([]);
 		}
 	};
 

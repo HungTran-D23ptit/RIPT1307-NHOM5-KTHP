@@ -47,7 +47,7 @@ const RequestCard = ({ item, onViewDetail, onRequestUpdate }: RequestCardProps) 
                             justifyContent: 'space-between',
                             width: '100%'
                         }}>
-                            {item.device.name}
+                            {item.device?.name || 'Thiết bị không tồn tại'}
                             <Badge
                                 count={STATUS_CONFIG[item.status].text}
                                 style={{

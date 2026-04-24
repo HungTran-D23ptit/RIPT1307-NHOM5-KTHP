@@ -88,7 +88,7 @@ const LichSuMuon: React.FC = () => {
 						{filteredRecords.map((item, index) => (
 							<tr key={item._id}>
 								<td>{String(index + 1).padStart(2, '0')}</td>
-								<td>{item.device.name}</td>
+								<td>{item.device?.name || 'Thiết bị không tồn tại'}</td>
 								<td>{formatDate(item.borrow_date)}</td>
 								<td>{formatDate(item.return_date)}</td>
 								<td>
@@ -142,7 +142,7 @@ const LichSuMuon: React.FC = () => {
 				confirmLoading={loading}
 			>
 				<p>
-					<strong>Thiết bị:</strong> {selectedRecord?.device.name}
+					<strong>Thiết bị:</strong> {selectedRecord?.device?.name || 'N/A'}
 				</p>
 				<Rate value={rating} onChange={setRating} allowClear={false} />
 				<Input.TextArea
