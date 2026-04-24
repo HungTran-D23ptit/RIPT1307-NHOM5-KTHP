@@ -32,12 +32,19 @@ export const useAvailableDevices = (
 					per_page: 10,
 				});
 				if (mounted) {
-					setDevices(response.data.data.data);
-					setTotal(response.data.data.total);
+					const responseData = response?.data?.data || response?.data || response;
+					const devicesList = Array.isArray(responseData?.data) 
+						? responseData.data 
+						: (Array.isArray(responseData) ? responseData : []);
+						
+					setDevices(devicesList);
+					setTotal(Number(responseData?.total) || devicesList.length);
 				}
 			} catch (error) {
 				if (mounted) {
+					console.error('Fetch devices error:', error);
 					message.error('Không thể tải danh sách thiết bị');
+					setDevices([]);
 				}
 			} finally {
 				if (mounted) {

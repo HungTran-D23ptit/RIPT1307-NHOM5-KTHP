@@ -29,14 +29,18 @@ const BorrowedDevices: React.FC<BorrowedDevicesProps> = ({
 		setLoading(true);
 		try {
 			const response = await getBorrowingDevices({ page, per_page: pageSize });
-			setData(response.data.borrowings);
+			const responseData = response?.data || response; // Handle both raw body and Axios-style response
+			
+			setData(responseData?.borrowings || []);
 			setPagination({
-				current: response.data.page,
-				pageSize: response.data.per_page,
-				total: response.data.total,
+				current: Number(responseData?.page) || 1,
+				pageSize: Number(responseData?.per_page) || 10,
+				total: Number(responseData?.total) || 0,
 			});
 		} catch (error) {
+			console.error('Fetch borrowed devices error:', error);
 			message.error('Không thể tải danh sách thiết bị đang cho mượn');
+			setData([]);
 		} finally {
 			setLoading(false);
 		}
@@ -64,14 +68,17 @@ const BorrowedDevices: React.FC<BorrowedDevicesProps> = ({
 			title: 'Thiết bị',
 			dataIndex: ['device', 'name'],
 			key: 'device',
-			render: (text: string, record: BorrowingDevice) => (
-				<Space>
-					<div>
-						<div>{text}</div>
-						<div style={{ fontSize: 12, color: '#666' }}>Mã: {record.device.code}</div>
-					</div>
-				</Space>
-			),
+			render: (text: string, record: BorrowingDevice) => {
+				const device = typeof record.device === 'object' ? record.device : null;
+				return (
+					<Space>
+						<div>
+							<div>{device?.name || (typeof record.device === 'string' ? `ID: ${record.device}` : 'N/A')}</div>
+							<div style={{ fontSize: 12, color: '#666' }}>Mã: {device?.code || '-'}</div>
+						</div>
+					</Space>
+				);
+			},
 		},
 		{
 			title: 'Người mượn',

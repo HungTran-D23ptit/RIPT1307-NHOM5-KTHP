@@ -13,7 +13,7 @@ const MaintenanceDevices: React.FC<MaintenanceDevicesProps> = ({ searchText, dev
 
 	return (
 		<Row gutter={[16, 16]}>
-			{devices.map((device) => (
+			{(devices || []).map((device) => (
 				<Col span={8} key={device._id}>
 					<Card loading={loading}>
 						<Image
