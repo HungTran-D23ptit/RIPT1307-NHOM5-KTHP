@@ -5,12 +5,12 @@ class HomeService {
   // Lấy thống kê tổng quan
   async getBorrowingStats(): Promise<BorrowingStats> {
     const response = await rootAPI.get('/user/borrow-requests/stats');
-    const data = response.data;
+    const data = response.data.data;
     return {
-      totalBorrowed: data.APPROVED + data.RETURNING,
-      totalReturned: data.RETURNED,
-      pendingApproval: data.PENDING,
-      overdue: data.OVERDUE
+      totalBorrowed: (data.APPROVED || 0) + (data.RETURNING || 0),
+      totalReturned: data.RETURNED || 0,
+      pendingApproval: data.PENDING || 0,
+      overdue: data.OVERDUE || 0
     };
   }
 
@@ -18,7 +18,7 @@ class HomeService {
   async getCurrentBorrowings(): Promise<CurrentBorrowing[]> {
     const response = await rootAPI.get('/user/borrow-requests/borrowing');
     console.log('API Response:', response.data);
-    const borrowings = response.data.borrowings || [];
+    const borrowings = response.data.data?.borrowings || [];
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -77,7 +77,7 @@ class HomeService {
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    return response.data.borrowings
+    return response.data.data.borrowings
       .filter((item: any) => {
         const returnDate = new Date(item.return_date);
         returnDate.setHours(0, 0, 0, 0);
@@ -93,7 +93,7 @@ class HomeService {
   async getRecommendedDevices(): Promise<RecommendedDevice[]> {
     const response = await rootAPI.get('/user/device/recommendations/me');
     console.log('Recommended devices API response:', response.data); // Thêm log để debug
-    return response.data.result.map((item: any) => ({
+    return response.data.data.map((item: any) => ({
       id: item._id,
       name: item.name,
       code: item.code,
