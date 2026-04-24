@@ -28,9 +28,10 @@ export async function getBorrowRequests(params: {
 
 // API xem chi tiết một yêu cầu mượn
 export async function getBorrowRequestDetail(id: string) {
-  return request<BorrowRequest>(`/user/borrow-requests/detail/${id}`, {
+  const response = await request<ApiResponse<BorrowRequest>>(`/user/borrow-requests/detail/${id}`, {
     method: 'GET',
   });
+  return response?.data;
 }
 
 // API hủy yêu cầu mượn

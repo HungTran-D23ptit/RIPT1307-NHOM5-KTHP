@@ -17,7 +17,7 @@ export const useDeviceDetail = (id: string) => {
 			setLoading(true);
 			try {
 				const res = await getDeviceById(id);
-				setDevice(res.data);
+				setDevice(res.data?.data);
 			} catch (e) {
 				setDevice(null);
 			} finally {

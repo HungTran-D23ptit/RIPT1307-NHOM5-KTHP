@@ -125,7 +125,9 @@ const RequestDetail: React.FC<RequestDetailProps> = ({ requestId, onBack }) => {
                                 <div style={{ width: '100%', height: 150, backgroundColor: '#f5f5f5', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     {request.device.image_url ? (
                                         <img 
-                                            src={`${API_URL}/static/${request.device.image_url}`} 
+                                            src={request.device.image_url.startsWith('http') 
+                                                ? request.device.image_url 
+                                                : `${API_URL}/static/${request.device.image_url}`} 
                                             alt={request.device.name} 
                                             style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: 8 }} 
                                         />
