@@ -92,11 +92,11 @@ const Detail = () => {
 				</div>
 				<div className='thiet-bi__detail-review-block'>
 					<h3>Đánh giá thiết bị</h3>
-					{device.reviews?.total === 0 ? (
+					{!device.reviews || device.reviews?.total === 0 ? (
 						<Empty description='Chưa có đánh giá nào' />
 					) : (
 						<div className='thiet-bi__detail-review-list'>
-							{device.reviews?.data.map((review) => (
+							{device.reviews?.data?.map((review) => (
 								<Card key={review._id} className='thiet-bi__detail-review-item'>
 									<div className='thiet-bi__detail-review-flex'>
 										<img

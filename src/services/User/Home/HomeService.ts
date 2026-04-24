@@ -5,7 +5,7 @@ class HomeService {
   // Lấy thống kê tổng quan
   async getBorrowingStats(): Promise<BorrowingStats> {
     const response = await rootAPI.get('/user/borrow-requests/stats');
-    const data = response.data.data;
+    const data = response.data?.data || response.data || {};
     return {
       totalBorrowed: (data.APPROVED || 0) + (data.RETURNING || 0),
       totalReturned: data.RETURNED || 0,
@@ -17,17 +17,15 @@ class HomeService {
   // Lấy danh sách thiết bị đang mượn (2 thiết bị gần hạn nhất)
   async getCurrentBorrowings(): Promise<CurrentBorrowing[]> {
     const response = await rootAPI.get('/user/borrow-requests/borrowing');
-    console.log('API Response:', response.data);
-    const borrowings = response.data.data?.borrowings || [];
+    const responseData = response.data?.data || response.data || {};
+    const borrowings = responseData.borrowings || [];
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
     // Sắp xếp theo ngày trả gần nhất
-    const sortedBorrowings = borrowings
+    const sortedBorrowings = [...borrowings]
       .sort((a: any, b: any) => new Date(a.return_date).getTime() - new Date(b.return_date).getTime())
       .slice(0, 2);
-
-    console.log('Sorted borrowings:', sortedBorrowings); 
 
     return sortedBorrowings.map((item: any) => {
       const returnDate = new Date(item.return_date);
@@ -48,11 +46,11 @@ class HomeService {
       return {
         _id: item._id,
         device: {
-          _id: item.device._id,
-          name: item.device.name,
-          code: item.device.code,
-          type: item.device.type,
-          image_url: item.device.image_url
+          _id: item.device?._id || '',
+          name: item.device?.name || 'Thiết bị không tồn tại',
+          code: item.device?.code || 'N/A',
+          type: item.device?.type || 'N/A',
+          image_url: item.device?.image_url
         },
         user: item.user,
         status: item.status,
@@ -71,20 +69,20 @@ class HomeService {
   // Lấy nhắc nhở quan trọng cho ngày hiện tại
   async getImportantReminders(): Promise<ImportantReminder[]> {
     const response = await rootAPI.get('/user/borrow-requests/borrowing');
+    const responseData = response.data?.data || response.data || {};
+    const borrowings = responseData.borrowings || [];
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    return response.data.data.borrowings
+    return borrowings
       .filter((item: any) => {
+        if (!item.return_date) return false;
         const returnDate = new Date(item.return_date);
         returnDate.setHours(0, 0, 0, 0);
         return returnDate.getTime() === today.getTime();
       })
       .map((item: any) => ({
-        deviceName: item.device.name,
+        deviceName: item.device?.name || 'Thiết bị không tồn tại',
         returnDate: item.return_date
       }));
   }
@@ -92,15 +90,15 @@ class HomeService {
   // Lấy danh sách thiết bị đề xuất
   async getRecommendedDevices(): Promise<RecommendedDevice[]> {
     const response = await rootAPI.get('/user/device/recommendations/me');
-    console.log('Recommended devices API response:', response.data); // Thêm log để debug
-    return response.data.data.map((item: any) => ({
+    const responseData = response.data?.data || response.data || [];
+    return responseData.map((item: any) => ({
       id: item._id,
-      name: item.name,
-      code: item.code,
-      type: item.type,
+      name: item.name || 'Thiết bị không tồn tại',
+      code: item.code || 'N/A',
+      type: item.type || 'N/A',
       description: item.description,
       imageUrl: item.image_url,
-      quantity: item.quantity
+      quantity: item.quantity || 0
     }));
   }
 }

@@ -31,7 +31,7 @@ export async function getBorrowRequestDetail(id: string) {
   const response = await request<ApiResponse<BorrowRequest>>(`/user/borrow-requests/detail/${id}`, {
     method: 'GET',
   });
-  return response?.data;
+  return response?.data?.data || response?.data;
 }
 
 // API hủy yêu cầu mượn
@@ -105,7 +105,8 @@ export async function getAllBorrowHistory(params: {
 
 // API lấy thống kê yêu cầu mượn
 export async function getBorrowStats() {
-  return request<BorrowStats>('/user/borrow-requests/stats', {
+  const response = await request<BorrowStats>('/user/borrow-requests/stats', {
     method: 'GET',
   });
+  return response?.data?.data || response?.data;
 }

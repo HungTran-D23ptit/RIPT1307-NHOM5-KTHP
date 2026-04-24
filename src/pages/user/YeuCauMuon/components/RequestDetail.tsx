@@ -123,7 +123,7 @@ const RequestDetail: React.FC<RequestDetailProps> = ({ requestId, onBack }) => {
                         <Row gutter={16} style={{ marginTop: 16 }}>
                             <Col span={6}>
                                 <div style={{ width: '100%', height: 150, backgroundColor: '#f5f5f5', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    {request.device.image_url ? (
+                                    {request.device?.image_url ? (
                                         <img 
                                             src={request.device.image_url.startsWith('http') 
                                                 ? request.device.image_url 
@@ -137,12 +137,12 @@ const RequestDetail: React.FC<RequestDetailProps> = ({ requestId, onBack }) => {
                                 </div>
                             </Col>
                             <Col span={18}>
-                                <h4 style={{ fontWeight: 700 }}>{request.device.name}</h4>
-                                <p><b>Loại:</b> {request.device.type || 'Chưa có'}</p>
+                                <h4 style={{ fontWeight: 700 }}>{request.device?.name || 'Thiết bị không tồn tại'}</h4>
+                                <p><b>Loại:</b> {request.device?.type || 'Chưa có'}</p>
                                 <p><b>Tình trạng: </b> 
                                     {getStatusTag(request.status)}
                                 </p>
-                                <p><b>Mã thiết bị: </b>{request.device.code}</p>
+                                <p><b>Mã thiết bị: </b>{request.device?.code || 'N/A'}</p>
                             </Col>
                         </Row>
                     </div>
@@ -160,7 +160,7 @@ const RequestDetail: React.FC<RequestDetailProps> = ({ requestId, onBack }) => {
                                 <BoxPlotOutlined /> <b>Số lượng:</b> {request.quantity}
                             </Col>
                             <Col span={12}>
-                                <PhoneOutlined /> <b>Số điện thoại:</b> {request.user.phone || 'Chưa có'}
+                                <PhoneOutlined /> <b>Số điện thoại:</b> {request.user?.phone || 'Chưa có'}
                             </Col>
                             <Col span={24}>
                                 <FileTextOutlined /> <b>Mục đích sử dụng:</b> {request.reason || 'Chưa có'}
