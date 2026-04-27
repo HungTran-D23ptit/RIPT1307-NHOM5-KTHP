@@ -47,22 +47,6 @@ export default defineConfig({
 	// https://umijs.org/plugins/plugin-esbuild
 	esbuild: {},
 	clean: false,
-	chainWebpack(config) {
-		config.module
-			.rule('less')
-			.test(/\.less$/)
-			.use('less-loader')
-			.loader('less-loader')
-			.tap((options) => {
-				return {
-					...options,
-					lessOptions: {
-						javascriptEnabled: true,
-						math: 'always',
-					},
-				};
-			});
-	},
 	title: false,
 	ignoreMomentLocale: true,
 	// proxy: proxy[REACT_APP_ENV || 'dev'],

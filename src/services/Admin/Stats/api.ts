@@ -19,7 +19,13 @@ export const fetchAllStats = async () => {
 		const typesResponse = deviceTypesRes.data?.data || deviceTypesRes.data;
 
 		// Ensure we are getting an array of types
-		const typeStats = Array.isArray(typesResponse?.types) ? typesResponse.types : [];
+		let typeStats = [];
+		if (Array.isArray(typesResponse)) {
+			typeStats = typesResponse;
+		} else if (Array.isArray(typesResponse?.types)) {
+			typeStats = typesResponse.types;
+		}
+
 		const typeNames = typeStats.map((item: any) => item.type);
 
 		return {

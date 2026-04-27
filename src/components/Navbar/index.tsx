@@ -6,7 +6,7 @@ import React from 'react';
 import { useHistory } from 'umi';
 import NotificationDropdown from './NotificationDropdown';
 import './index.less';
-import { useUser } from '@/contexts/UserContext';
+import { useUser, emitUserUpdated } from '@/contexts/UserContext';
 
 const Navbar: React.FC = () => {
 	const history = useHistory();
@@ -25,6 +25,7 @@ const Navbar: React.FC = () => {
 		} finally {
 			localStorage.removeItem('token');
 			localStorage.removeItem('role');
+			emitUserUpdated(null); // Xóa thông tin user trong context
 			message.success('Đăng xuất thành công!');
 			history.push('/auth/login');
 		}

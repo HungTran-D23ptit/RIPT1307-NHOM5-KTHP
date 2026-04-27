@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { message } from 'antd';
 import { history } from 'umi';
 import { loginAdmin } from '@/services/Admin/Auth';
+import { refreshUser } from '@/contexts/UserContext';
 
 export default () => {
 	const [loading, setLoading] = useState<boolean>(false);
@@ -55,6 +56,7 @@ export default () => {
 				if (token) {
 					localStorage.setItem('token', token);
 					localStorage.setItem('role', 'admin');
+					refreshUser(); // Làm mới thông tin user
 					message.success(`Chào mừng quản trị viên`);
 					history.push('/admin/dashboard');
 					return true;

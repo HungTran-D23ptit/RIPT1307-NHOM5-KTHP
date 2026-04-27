@@ -2,6 +2,7 @@ import { useMaintenanceDevices } from '@/models/Admin/Device/useMaintenanceDevic
 import { MaintenanceDevicesProps } from '@/services/Admin/Device/device';
 import { Button, Card, Col, Image, Row, Tag } from 'antd';
 import React from 'react';
+import { getImageUrl } from '@/utils/utils';
 
 const MaintenanceDevices: React.FC<MaintenanceDevicesProps> = ({ searchText, deviceType, deviceStatus, onSuccess }) => {
 	const { devices, loading, handleCompleteMaintenance, getStatusTag, getDeviceTypeLabel } = useMaintenanceDevices(
@@ -17,7 +18,7 @@ const MaintenanceDevices: React.FC<MaintenanceDevicesProps> = ({ searchText, dev
 				<Col span={8} key={device._id}>
 					<Card loading={loading}>
 						<Image
-							src={device.image_url}
+							src={getImageUrl(device.image_url)}
 							alt={device.name}
 							style={{ width: '100%', height: 200, objectFit: 'cover' }}
 						/>

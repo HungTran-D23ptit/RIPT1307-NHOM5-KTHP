@@ -3,6 +3,7 @@ import { ArrowLeftOutlined, StarFilled, ZoomInOutlined } from '@ant-design/icons
 import { Button, Card, Empty, Modal, Rate, Spin, Tag, Tooltip } from 'antd';
 import { history, useParams } from 'umi';
 import { API_URL } from '@/config/config';
+import { getImageUrl } from '@/utils/utils';
 import './Detail.less';
 
 const Detail = () => {
@@ -30,13 +31,7 @@ const Detail = () => {
 				<div className='thiet-bi__detail-flexbox'>
 					<div className='thiet-bi__detail-img-wrap' onClick={toggleImageModal}>
 						<img
-							src={
-								device.image_url
-									? device.image_url.startsWith('http')
-										? device.image_url
-										: `${API_URL}/static/${device.image_url}`
-									: 'https://via.placeholder.com/400x260?text=No+Image'
-							}
+							src={getImageUrl(device.image_url) || 'https://via.placeholder.com/400x260?text=No+Image'}
 							alt={device.name}
 							className='thiet-bi__detail-img'
 						/>
@@ -100,7 +95,7 @@ const Detail = () => {
 								<Card key={review._id} className='thiet-bi__detail-review-item'>
 									<div className='thiet-bi__detail-review-flex'>
 										<img
-											src={review.user?.avatar || 'https://via.placeholder.com/40'}
+											src={getImageUrl(review.user?.avatar) || 'https://via.placeholder.com/40'}
 											alt='avatar'
 											className='thiet-bi__detail-review-avatar'
 										/>
@@ -129,13 +124,7 @@ const Detail = () => {
 				className='image-modal'
 			>
 				<img
-					src={
-						device.image_url
-							? device.image_url.startsWith('http')
-								? device.image_url
-								: `${API_URL}/static/${device.image_url}`
-							: 'https://via.placeholder.com/400x260?text=No+Image'
-					}
+					src={getImageUrl(device.image_url) || 'https://via.placeholder.com/400x260?text=No+Image'}
 					alt={device.name}
 					style={{ width: '100%', height: 'auto', maxHeight: '80vh', objectFit: 'contain' }}
 				/>

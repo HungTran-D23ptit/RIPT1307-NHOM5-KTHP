@@ -9,6 +9,8 @@ import { BorrowRequestState } from '@/models/User/ThietBi/types';
 import { Button, Card, Col, DatePicker, Input, InputNumber, Row } from 'antd';
 import { useEffect, useState } from 'react';
 import { history, useParams } from 'umi';
+import { API_URL } from '@/config/config';
+import { getImageUrl } from '@/utils/utils';
 import './BorrowRequest.less';
 
 const BorrowRequest = () => {
@@ -53,13 +55,7 @@ const BorrowRequest = () => {
 					<Col span={10}>
 						<Card className='device-detail-card'>
 							<img
-								src={
-									state.device?.image_url
-										? state.device.image_url.startsWith('http')
-											? state.device.image_url
-											: `${API_URL}/static/${state.device.image_url}`
-										: 'https://via.placeholder.com/300x200?text=No+Image'
-								}
+								src={getImageUrl(state.device?.image_url) || 'https://via.placeholder.com/300x200?text=No+Image'}
 								alt={state.device?.name}
 							/>
 							<div className='device-name-bold'>{state.device?.name}</div>

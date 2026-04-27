@@ -1,4 +1,5 @@
 import { API_URL } from '@/config/config';
+import { getImageUrl } from '@/utils/utils';
 import { useBorrowRequestDetailData } from '@/models/Admin/BorrowRequest/useBorrowRequestDetailData';
 import { useStatusConfig } from '@/models/Admin/BorrowRequest/useStatusConfig';
 import { AdminRequestDetailProps } from '@/services/Admin/BorrowRequest/types';
@@ -72,7 +73,7 @@ const AdminRequestDetail: React.FC<AdminRequestDetailProps> = ({ requestId, onBa
 								>
 									{request.device?.image_url ? (
 										<img
-											src={`${API_URL}/static/${request.device.image_url}`}
+											src={getImageUrl(request.device.image_url)}
 											alt={request.device?.name || 'Thiết bị'}
 											style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: 8 }}
 										/>

@@ -1,4 +1,5 @@
 import { EDinhDangFile } from '@/services/base/constant';
+import { API_URL } from '@/config/config';
 import { message, type FormInstance } from 'antd';
 import { type AxiosResponse } from 'axios';
 import type { Moment } from 'moment';
@@ -20,6 +21,12 @@ const charMap: any = {
 };
 
 export const isUrl = (path: string): boolean => urlRegex.test(path);
+
+export const getImageUrl = (url?: string) => {
+	if (!url) return undefined;
+	if (url.startsWith('http')) return url;
+	return `${API_URL}/static/${url}`;
+};
 
 export const isAntDesignPro = (): boolean => {
 	if (ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION === 'site') {

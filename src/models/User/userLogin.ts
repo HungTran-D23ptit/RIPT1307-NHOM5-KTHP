@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { message } from 'antd';
 import { history } from 'umi';
 import { loginUser, loginWithGoogle } from '@/services/User/Auth/index';
+import { refreshUser } from '@/contexts/UserContext';
 
 export default () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -52,6 +53,7 @@ export default () => {
       if (userResponse?.data?.data) {
         localStorage.setItem('token', userResponse.data.data.access_token);
         localStorage.setItem('role', 'user');
+        refreshUser(); // Làm mới thông tin user
         message.success('Chào mừng quay trở lại');
         history.push('/user/dashboard');
         return true;
@@ -72,6 +74,7 @@ export default () => {
       if (response?.data?.data) {
         localStorage.setItem('token', response.data.data.access_token);
         localStorage.setItem('role', 'user');
+        refreshUser(); // Làm mới thông tin user
         message.success('Đăng nhập Google thành công');
         history.push('/user/dashboard');
         return true;

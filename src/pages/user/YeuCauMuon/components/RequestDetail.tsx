@@ -7,6 +7,7 @@ import type { BorrowRequest } from '@/services/User/AllRequest/typing.d';
 import type { RequestDetailProps } from '@/services/User/AllRequest/FEtyping';
 import { handleRecreateRequest } from '@/models/User/AllRequest/requestCard';
 import moment from 'moment';
+import { getImageUrl } from '@/utils/utils';
 
 const RequestDetail: React.FC<RequestDetailProps> = ({ requestId, onBack }) => {
     const [request, setRequest] = useState<BorrowRequest | null>(null);
@@ -125,9 +126,7 @@ const RequestDetail: React.FC<RequestDetailProps> = ({ requestId, onBack }) => {
                                 <div style={{ width: '100%', height: 150, backgroundColor: '#f5f5f5', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     {request.device?.image_url ? (
                                         <img 
-                                            src={request.device.image_url.startsWith('http') 
-                                                ? request.device.image_url 
-                                                : `${API_URL}/static/${request.device.image_url}`} 
+                                            src={getImageUrl(request.device.image_url)} 
                                             alt={request.device.name} 
                                             style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: 8 }} 
                                         />

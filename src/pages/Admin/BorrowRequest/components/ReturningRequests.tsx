@@ -41,8 +41,8 @@ const ReturningRequests: React.FC = () => {
 			render: (text: string, record: BorrowingDevice) => (
 				<Space>
 					<div>
-						<div>{text}</div>
-						<div style={{ fontSize: 12, color: '#666' }}>Mã: {record.device.code}</div>
+						<div>{text || 'Thiết bị không còn tồn tại'}</div>
+						<div style={{ fontSize: 12, color: '#666' }}>Mã: {record.device?.code || 'N/A'}</div>
 					</div>
 				</Space>
 			),
@@ -54,8 +54,8 @@ const ReturningRequests: React.FC = () => {
 			width: 200,
 			render: (text: string, record: BorrowingDevice) => (
 				<div>
-					<div>{text}</div>
-					<div style={{ fontSize: 12, color: '#666' }}>{record.user.email}</div>
+					<div>{text || 'N/A'}</div>
+					<div style={{ fontSize: 12, color: '#666' }}>{record.user?.email || 'N/A'}</div>
 				</div>
 			),
 		},

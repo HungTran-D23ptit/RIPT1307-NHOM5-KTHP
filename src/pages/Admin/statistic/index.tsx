@@ -19,6 +19,7 @@ import {
 import { Pie } from '@ant-design/plots';
 import { Card, Col, message, Row, Statistic, Table, Tabs, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { getImageUrl } from '@/utils/utils';
 
 const StatisticPage: React.FC = () => {
 	const [borrowStats, setBorrowStats] = useState<BorrowStats | null>(null);
@@ -63,7 +64,7 @@ const StatisticPage: React.FC = () => {
 			render: (text: string, record: MostBorrowedDevice) => (
 				<div style={{ display: 'flex', alignItems: 'center' }}>
 					<img
-						src={record.image_url}
+						src={getImageUrl(record.image_url)}
 						alt={record.name}
 						style={{ width: 40, height: 40, marginRight: 10, borderRadius: 4 }}
 					/>
@@ -94,14 +95,14 @@ const StatisticPage: React.FC = () => {
 	const processedMostBorrowedDevices = calculateTrendAndUsageRate(mostBorrowedDevices);
 	const { totalBorrowed, onTimeReturnRate } = calculateBorrowStats(borrowStats);
 
-	const deviceStatusData: DeviceStatusData[] = [
+	const deviceStatusData = [
 		{
 			type: 'Có sẵn',
-			count: deviceTotalStats?.NORMAL || 0,
+			count: deviceTotalStats?.total?.NORMAL || deviceTotalStats?.NORMAL || 0,
 		},
 		{
 			type: 'Đang bảo trì',
-			count: deviceTotalStats?.MAINTENANCE || 0,
+			count: deviceTotalStats?.total?.MAINTENANCE || deviceTotalStats?.MAINTENANCE || 0,
 		},
 	];
 
@@ -269,7 +270,7 @@ const StatisticPage: React.FC = () => {
 					>
 						<Statistic
 							title={<span style={{ color: '#fff', fontSize: '16px' }}>Thiết bị đang bảo trì</span>}
-							value={deviceTotalStats?.MAINTENANCE || 0}
+							value={deviceTotalStats?.total?.MAINTENANCE || deviceTotalStats?.MAINTENANCE || 0}
 							precision={0}
 							valueStyle={{ color: '#fff', fontSize: '28px', fontWeight: 'bold' }}
 							prefix={<ExclamationCircleOutlined style={{ color: '#fff', fontSize: '24px' }} />}
